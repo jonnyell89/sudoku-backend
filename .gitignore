@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Protect sensitive information from GitHub ###
+src/main/resources/application.properties

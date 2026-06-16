@@ -144,4 +144,37 @@ public class GridTest {
             assertThrows(IllegalArgumentException.class, () -> new Grid(cells));
         }
     }
+
+    @Nested
+    class GetRowTests {
+
+        @BeforeEach
+        void init() {
+            grid = new Grid(createValidCells());
+        }
+
+        @Test
+        void shouldReturnRowOfCorrectLength() {
+            for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
+                assertEquals(SudokuConstants.GRID_SIZE, grid.getRow(i).length);
+            }
+        }
+
+        @Test
+        void shouldThrowWhenRowIndexIsBelowLowerBound() {
+            assertThrows(IllegalArgumentException.class, () -> grid.getRow(ROW_INDEX_INVALID_LOWER_BOUND));
+        }
+
+        @Test
+        void shouldThrowWhenRowIndexIsAboveUpperBound() {
+            assertThrows(IllegalArgumentException.class, () -> grid.getRow(ROW_INDEX_INVALID_UPPER_BOUND));
+        }
+
+        @Test
+        void shouldReturnDefensiveCopy() {
+            int[] copiedRow = grid.getRow(ROW_INDEX);
+            copiedRow[COL_INDEX] = VALUE + 1;
+            assertEquals(VALUE, grid.getRow(ROW_INDEX)[COL_INDEX]);
+        }
+    }
 }

@@ -2,6 +2,8 @@ package com.sudoku.sudoku_backend.core;
 
 import com.sudoku.sudoku_backend.SudokuConstants;
 
+import java.util.Arrays;
+
 public class Grid {
 
     private final int[][] cells;
@@ -14,14 +16,14 @@ public class Grid {
         validateCells(cells);
         int[][] copy = new int[cells.length][];
         for (int i = 0; i < cells.length; i++) {
-            copy[i] = cells[i].clone();
+            copy[i] = Arrays.copyOf(cells[i], cells[i].length);
         }
         this.cells = copy;
     }
 
     public int[] getRow(int rowIndex) {
         validateRowIndex(rowIndex);
-        return this.cells[rowIndex].clone();
+        return Arrays.copyOf(this.cells[rowIndex], this.cells[rowIndex].length);
     }
 
     public int[] getCol(int colIndex) {
@@ -39,9 +41,9 @@ public class Grid {
         int startRow = Math.floorDiv(rowIndex, SudokuConstants.BOX_SIZE) * SudokuConstants.BOX_SIZE;
         int startCol = Math.floorDiv(colIndex, SudokuConstants.BOX_SIZE) * SudokuConstants.BOX_SIZE;
         int boxIndex = 0;
-        for (int i = startRow; i < SudokuConstants.BOX_SIZE; i++) {
-            for (int j = startCol; j < SudokuConstants.BOX_SIZE; j++) {
-                box[boxIndex++] = this.cells[i][j];
+        for (int i = 0; i < SudokuConstants.BOX_SIZE; i++) {
+            for (int j = 0; j < SudokuConstants.BOX_SIZE; j++) {
+                box[boxIndex++] = this.cells[startRow + i][startCol + j];
             }
         }
         return box;

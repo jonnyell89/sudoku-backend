@@ -177,4 +177,37 @@ public class GridTest {
             assertEquals(VALUE, grid.getRow(ROW_INDEX)[COL_INDEX]);
         }
     }
+
+    @Nested
+    class GetColTests {
+
+        @BeforeEach
+        void init() {
+            grid = new Grid(createValidCells());
+        }
+
+        @Test
+        void shouldReturnColOfCorrectLength() {
+            for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
+                assertEquals(SudokuConstants.GRID_SIZE, grid.getCol(i).length);
+            }
+        }
+
+        @Test
+        void shouldThrowWhenColIndexIsBelowLowerBound() {
+            assertThrows(IllegalArgumentException.class, () -> grid.getCol(COL_INDEX_INVALID_LOWER_BOUND));
+        }
+
+        @Test
+        void shouldThrowWhenColIndexIsAboveUpperBound() {
+            assertThrows(IllegalArgumentException.class, () -> grid.getCol(COL_INDEX_INVALID_UPPER_BOUND));
+        }
+
+        @Test
+        void shouldReturnDefensiveCopy() {
+            int[] colCopy = grid.getCol(COL_INDEX);
+            colCopy[ROW_INDEX] = VALUE + 1;
+            assertEquals(VALUE, grid.getCol(COL_INDEX)[ROW_INDEX]);
+        }
+    }
 }

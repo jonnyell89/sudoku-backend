@@ -33,6 +33,20 @@ public class Grid {
         return col;
     }
 
+    public int[] getBox(int rowIndex, int colIndex) {
+        validateIndices(rowIndex, colIndex);
+        int[] box = new int[SudokuConstants.BOX_SIZE * SudokuConstants.BOX_SIZE];
+        int startRow = Math.floorDiv(rowIndex, SudokuConstants.BOX_SIZE) * SudokuConstants.BOX_SIZE;
+        int startCol = Math.floorDiv(colIndex, SudokuConstants.BOX_SIZE) * SudokuConstants.BOX_SIZE;
+        int boxIndex = 0;
+        for (int i = startRow; i < SudokuConstants.BOX_SIZE; i++) {
+            for (int j = startCol; j < SudokuConstants.BOX_SIZE; j++) {
+                box[boxIndex++] = this.cells[i][j];
+            }
+        }
+        return box;
+    }
+
     private void validateCells(int[][] cells) {
         if (cells == null) {
             throw new IllegalArgumentException("cells should not be null.");
@@ -69,5 +83,10 @@ public class Grid {
         if (colIndex < SudokuConstants.MIN_INDEX || colIndex > SudokuConstants.MAX_INDEX) {
             throw new IllegalArgumentException(String.format("colIndex must be between %d and %d.", SudokuConstants.MIN_INDEX, SudokuConstants.MAX_INDEX));
         }
+    }
+
+    private void validateIndices(int rowIndex, int colIndex) {
+        validateRowIndex(rowIndex);
+        validateColIndex(colIndex);
     }
 }

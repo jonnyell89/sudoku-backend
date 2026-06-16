@@ -47,6 +47,15 @@ public class Grid {
             if (cells[i].length != SudokuConstants.GRID_SIZE) {
                 throw new IllegalArgumentException(String.format("Row %d should contain %d cells.", i, SudokuConstants.GRID_SIZE));
             }
+            for (int j = 0; j < cells[i].length; j++) {
+                validateCell(cells[i][j]);
+            }
+        }
+    }
+
+    private void validateCell(int cell) {
+        if (cell < SudokuConstants.EMPTY_CELL || cell > SudokuConstants.MAX_VALUE) {
+            throw new IllegalArgumentException(String.format("cell must be between %d and %d.", SudokuConstants.EMPTY_CELL, SudokuConstants.MAX_VALUE));
         }
     }
 

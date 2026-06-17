@@ -65,6 +65,21 @@ public class Grid {
         this.cells[rowIndex][colIndex] = SudokuConstants.EMPTY_CELL;
     }
 
+    public boolean isLegal(int rowIndex, int colIndex, int value) {
+        validateIndices(rowIndex, colIndex);
+        validateCell(value);
+        for (int cell : getRow(rowIndex)) {
+            if (cell == value) return false;
+        }
+        for (int cell : getCol(colIndex)) {
+            if (cell == value) return false;
+        }
+        for (int cell : getBox(rowIndex, colIndex)) {
+            if (cell == value) return false;
+        }
+        return true;
+    }
+
     private void validateCells(int[][] cells) {
         if (cells == null) {
             throw new IllegalArgumentException("cells should not be null.");

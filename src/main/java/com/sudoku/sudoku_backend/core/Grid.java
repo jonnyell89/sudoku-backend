@@ -49,6 +49,22 @@ public class Grid {
         return box;
     }
 
+    public int getValue(int rowIndex, int colIndex) {
+        validateIndices(rowIndex, colIndex);
+        return this.cells[rowIndex][colIndex];
+    }
+
+    public void setValue(int rowIndex, int colIndex, int value) {
+        validateIndices(rowIndex, colIndex);
+        validateCell(value);
+        this.cells[rowIndex][colIndex] = value;
+    }
+
+    public void clearValue(int rowIndex, int colIndex) {
+        validateIndices(rowIndex, colIndex);
+        this.cells[rowIndex][colIndex] = SudokuConstants.EMPTY_CELL;
+    }
+
     private void validateCells(int[][] cells) {
         if (cells == null) {
             throw new IllegalArgumentException("cells should not be null.");

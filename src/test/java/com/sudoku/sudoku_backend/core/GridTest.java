@@ -210,4 +210,77 @@ public class GridTest {
             assertEquals(VALUE, grid.getCol(COL_INDEX)[ROW_INDEX]);
         }
     }
+
+    @Nested
+    class GetBoxTests {
+
+        @BeforeEach
+        void init() {
+            grid = new Grid(createValidCells());
+        }
+
+        @Test
+        void shouldReturnBoxOfCorrectLength() {
+            for (int i = 0; i < SudokuConstants.BOX_SIZE * SudokuConstants.BOX_SIZE; i++) {
+                for (int j = 0; j < grid.getRow(i).length; j++) {
+                    assertEquals(SudokuConstants.GRID_SIZE, grid.getBox(i, j).length);
+                }
+            }
+        }
+
+        @Test
+        void shouldThrowWhenRowIndexIsBelowLowerBound() {
+            assertThrows(IllegalArgumentException.class, () -> grid.getBox(ROW_INDEX_INVALID_LOWER_BOUND, COL_INDEX));
+        }
+
+        @Test
+        void shouldThrowWhenRowIndexIsAboveUpperBound() {
+            assertThrows(IllegalArgumentException.class, () -> grid.getBox(ROW_INDEX_INVALID_UPPER_BOUND, COL_INDEX));
+        }
+
+        @Test
+        void shouldThrowWhenColIndexIsBelowLowerBound() {
+            assertThrows(IllegalArgumentException.class, () -> grid.getBox(ROW_INDEX, COL_INDEX_INVALID_LOWER_BOUND));
+        }
+
+        @Test
+        void shouldThrowWhenColIndexIsAboveUpperBound() {
+            assertThrows(IllegalArgumentException.class, () -> grid.getBox(ROW_INDEX, COL_INDEX_INVALID_UPPER_BOUND));
+        }
+
+        @Test
+        void shouldReturnBoxCellsInCorrectOrder() {
+            int[][] cells = new int[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
+            cells[0][0] = 1; cells[0][1] = 2; cells[0][2] = 3;
+            cells[1][0] = 4; cells[1][1] = 5; cells[1][2] = 6;
+            cells[2][0] = 7; cells[2][1] = 8; cells[2][2] = 9;
+            grid = new Grid(cells);
+            assertArrayEquals(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9}, grid.getBox(ROW_INDEX, COL_INDEX));
+        }
+
+        @Test
+        void shouldReturnBoxCells() {
+            int[][] cells = new int[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
+            cells[6][6] = 1; cells[6][7] = 2; cells[6][8] = 3;
+            cells[7][6] = 4; cells[7][7] = 5; cells[7][8] = 6;
+            cells[8][6] = 7; cells[8][7] = 8; cells[8][8] = 9;
+            grid = new Grid(cells);
+            for (int boxRow = 0; boxRow < SudokuConstants.GRID_SIZE; boxRow += SudokuConstants.BOX_SIZE) {
+                for (int boxCol = 0; boxCol < SudokuConstants.GRID_SIZE; boxCol += SudokuConstants.BOX_SIZE) {
+                    if (boxRow == 6 && boxCol == 6) {
+                        assertArrayEquals(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9}, grid.getBox(boxRow, boxCol));
+                    } else {
+                        assertArrayEquals(new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0}, grid.getBox(boxRow, boxCol));
+                    }
+                }
+            }
+        }
+
+        @Test
+        void shouldReturnDefensiveCopy() {
+            int[] boxCopy = grid.getBox(ROW_INDEX, COL_INDEX);
+            boxCopy[ROW_INDEX] = VALUE + 1;
+            assertEquals(VALUE, grid.getBox(ROW_INDEX, COL_INDEX)[ROW_INDEX]);
+        }
+    }
 }

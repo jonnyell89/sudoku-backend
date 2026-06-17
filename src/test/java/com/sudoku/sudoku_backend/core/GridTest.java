@@ -289,19 +289,12 @@ public class GridTest {
 
         @BeforeEach
         void init() {
-            int[][] cells = new int[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
-            cells[ROW_INDEX][COL_INDEX] = VALUE;
-            grid = new Grid(cells);
+            grid = new Grid(createValidCells());
         }
 
         @Test
         void shouldReturnCorrectValue() {
             assertEquals(VALUE, grid.getValue(ROW_INDEX, COL_INDEX));
-        }
-
-        @Test
-        void shouldReturnEmptyCellValueForUnsetCell() {
-            assertEquals(SudokuConstants.EMPTY_CELL, grid.getValue(ROW_INDEX + 1, COL_INDEX + 1));
         }
 
         @Test
@@ -334,7 +327,7 @@ public class GridTest {
         }
 
         @Test
-        void shouldSetCorrectValue() {
+        void shouldSetCorrectCellValue() {
             grid.setValue(ROW_INDEX, COL_INDEX, VALUE + 1);
             assertEquals(VALUE + 1, grid.getValue(ROW_INDEX, COL_INDEX));
         }
@@ -367,6 +360,41 @@ public class GridTest {
         @Test
         void shouldThrowWhenCellValueIsAboveUpperBound() {
             assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW_INDEX, COL_INDEX, VALUE_INVALID_UPPER_BOUND));
+        }
+    }
+
+    @Nested
+    class ClearValueTests {
+
+        @BeforeEach
+        void init() {
+            grid = new Grid(createValidCells());
+        }
+
+        @Test
+        void shouldClearCorrectCellValue() {
+            grid.clearValue(ROW_INDEX, COL_INDEX);
+            assertEquals(SudokuConstants.EMPTY_CELL, grid.getValue(ROW_INDEX, COL_INDEX));
+        }
+
+        @Test
+        void shouldThrowWhenRowIndexIsBelowLowerBound() {
+            assertThrows(IllegalArgumentException.class, () -> grid.clearValue(ROW_INDEX_INVALID_LOWER_BOUND, COL_INDEX));
+        }
+
+        @Test
+        void shouldThrowWhenRowIndexIsAboveUpperBound() {
+            assertThrows(IllegalArgumentException.class, () -> grid.clearValue(ROW_INDEX_INVALID_UPPER_BOUND, COL_INDEX));
+        }
+
+        @Test
+        void shouldThrowWhenColIndexIsBelowLowerBound() {
+            assertThrows(IllegalArgumentException.class, () -> grid.clearValue(ROW_INDEX, COL_INDEX_INVALID_LOWER_BOUND));
+        }
+
+        @Test
+        void shouldThrowWhenColIndexIsAboveUpperBound() {
+            assertThrows(IllegalArgumentException.class, () -> grid.clearValue(ROW_INDEX, COL_INDEX_INVALID_UPPER_BOUND));
         }
     }
 }

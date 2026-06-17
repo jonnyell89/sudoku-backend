@@ -324,4 +324,49 @@ public class GridTest {
             assertThrows(IllegalArgumentException.class, () -> grid.getValue(ROW_INDEX, COL_INDEX_INVALID_UPPER_BOUND));
         }
     }
+
+    @Nested
+    class SetValueTests {
+
+        @BeforeEach
+        void init() {
+            grid = new Grid(createValidCells());
+        }
+
+        @Test
+        void shouldSetCorrectValue() {
+            grid.setValue(ROW_INDEX, COL_INDEX, VALUE + 1);
+            assertEquals(VALUE + 1, grid.getValue(ROW_INDEX, COL_INDEX));
+        }
+
+        @Test
+        void shouldThrowWhenRowIndexIsBelowLowerBound() {
+            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW_INDEX_INVALID_LOWER_BOUND, COL_INDEX, VALUE));
+        }
+
+        @Test
+        void shouldThrowWhenRowIndexIsAboveUpperBound() {
+            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW_INDEX_INVALID_UPPER_BOUND, COL_INDEX, VALUE));
+        }
+
+        @Test
+        void shouldThrowWhenColIndexIsBelowLowerBound() {
+            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW_INDEX, COL_INDEX_INVALID_LOWER_BOUND, VALUE));
+        }
+
+        @Test
+        void shouldThrowWhenColIndexIsAboveUpperBound() {
+            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW_INDEX, COL_INDEX_INVALID_UPPER_BOUND, VALUE));
+        }
+
+        @Test
+        void shouldThrowWhenCellValueIsBelowLowerBound() {
+            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW_INDEX, COL_INDEX, VALUE_INVALID_LOWER_BOUND));
+        }
+
+        @Test
+        void shouldThrowWhenCellValueIsAboveUpperBound() {
+            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW_INDEX, COL_INDEX, VALUE_INVALID_UPPER_BOUND));
+        }
+    }
 }

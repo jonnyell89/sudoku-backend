@@ -80,6 +80,17 @@ public class Grid {
         return true;
     }
 
+    public boolean isFull() {
+        for (int[] row : this.cells) {
+            for (int cell : row) {
+                if (cell == SudokuConstants.EMPTY_CELL) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private void validateCells(int[][] cells) {
         if (cells == null) {
             throw new IllegalArgumentException("cells should not be null.");

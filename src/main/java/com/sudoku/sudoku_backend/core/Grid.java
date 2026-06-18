@@ -3,6 +3,7 @@ package com.sudoku.sudoku_backend.core;
 import com.sudoku.sudoku_backend.SudokuConstants;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Grid {
 
@@ -89,6 +90,23 @@ public class Grid {
             }
         }
         return true;
+    }
+
+    public Grid copy() {
+        return new Grid(this.cells);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Grid grid = (Grid) o;
+        return Objects.deepEquals(cells, grid.cells);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.deepHashCode(cells);
     }
 
     private void validateCells(int[][] cells) {

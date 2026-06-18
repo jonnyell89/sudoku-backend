@@ -465,4 +465,28 @@ public class GridTest {
             assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ROW_INDEX, COL_INDEX, VALUE_INVALID_UPPER_BOUND));
         }
     }
+
+    @Nested
+    class IsFullTests {
+
+        @Test
+        void shouldReturnTrueWhenGridContainsNoEmptyCells() {
+            grid = new Grid(createValidCells());
+            assertTrue(grid.isFull());
+        }
+
+        @Test
+        void shouldReturnFalseWhenGridContainsAnEmptyCell() {
+            int[][] cells = createValidCells();
+            cells[8][8] = SudokuConstants.EMPTY_CELL;
+            grid = new Grid(cells);
+            assertFalse(grid.isFull());
+        }
+
+        @Test
+        void shouldReturnFalseWhenGridIsEmpty() {
+            grid = new Grid();
+            assertFalse(grid.isFull());
+        }
+    }
 }

@@ -489,4 +489,26 @@ public class GridTest {
             assertFalse(grid.isFull());
         }
     }
+
+    @Nested
+    class CopyTests {
+
+        @BeforeEach
+        void init() {
+            grid = new Grid(createValidCells());
+        }
+
+        @Test
+        void shouldReturnAnExactCopyOfGrid() {
+            Grid gridCopy = grid.copy();
+            assertEquals(grid, gridCopy);
+        }
+
+        @Test
+        void shouldReturnIndependentCopyOfGrid() {
+            Grid gridCopy = grid.copy();
+            gridCopy.setValue(ROW_INDEX, COL_INDEX, VALUE + 1);
+            assertNotEquals(grid, gridCopy);
+        }
+    }
 }

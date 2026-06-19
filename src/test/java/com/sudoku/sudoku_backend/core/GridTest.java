@@ -536,4 +536,15 @@ public class GridTest {
             assertNotEquals(grid, object);
         }
     }
+
+    @Nested
+    class HashCodeTests {
+
+        @Test
+        void shouldReturnSameHashCodesForEqualGrids() {
+            grid = new Grid(createValidCells());
+            Grid gridCopy = grid.copy();
+            assertEquals(grid.hashCode(), gridCopy.hashCode());
+        }
+    }
 }

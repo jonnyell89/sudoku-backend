@@ -3,7 +3,9 @@ package com.sudoku.sudoku_backend.core;
 import com.sudoku.sudoku_backend.SudokuConstants;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class Grid {
 
@@ -90,6 +92,29 @@ public class Grid {
             }
         }
         return true;
+    }
+
+    public boolean isValid() {
+        for (int i = 0; i < this.cells.length; i++) {
+            if (hasDuplicates(getRow(i))) return false;
+            if (hasDuplicates(getCol(i))) return false;
+        }
+        for (int i = 0; i < this.cells.length; i += SudokuConstants.BOX_SIZE) {
+            for (int j = 0; j < this.cells[i].length; j += SudokuConstants.BOX_SIZE) {
+                if (hasDuplicates(getBox(i, j))) return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean hasDuplicates(int[] unit) {
+        Set<Integer> seen = new HashSet<>();
+        for (int cell : unit) {
+            if (cell != SudokuConstants.EMPTY_CELL && !seen.add(cell)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Grid copy() {

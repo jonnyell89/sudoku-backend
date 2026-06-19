@@ -499,7 +499,7 @@ public class GridTest {
         }
 
         @Test
-        void shouldReturnAnExactCopyOfGrid() {
+        void shouldReturnCopyOfGrid() {
             Grid gridCopy = grid.copy();
             assertEquals(grid, gridCopy);
         }
@@ -509,6 +509,31 @@ public class GridTest {
             Grid gridCopy = grid.copy();
             gridCopy.setValue(ROW_INDEX, COL_INDEX, VALUE + 1);
             assertNotEquals(grid, gridCopy);
+        }
+    }
+
+    @Nested
+    class EqualsTests {
+
+        @BeforeEach
+        void init() {
+            grid = new Grid(createValidCells());
+        }
+
+        @Test
+        void shouldReturnTrueWhenComparingSameInstance() {
+            assertEquals(grid, grid);
+        }
+
+        @Test
+        void shouldReturnFalseWhenComparedToNull() {
+            assertNotEquals(null, grid);
+        }
+
+        @Test
+        void shouldReturnFalseWhenComparedToDifferentType() {
+            Object object = new Object();
+            assertNotEquals(grid, object);
         }
     }
 }

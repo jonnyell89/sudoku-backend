@@ -2,6 +2,8 @@ package com.sudoku.sudoku_backend.core;
 
 import com.sudoku.sudoku_backend.SudokuConstants;
 
+import java.util.Random;
+
 public class Solver {
 
     private record Coordinate(int rowIndex, int colIndex) {
@@ -21,7 +23,7 @@ public class Solver {
 //
 //    private boolean backtrack(Grid grid) {}
 
-    private Coordinate findEmptyCell1(Grid grid) {
+    private Coordinate findEmptyCell(Grid grid) {
         for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
             for (int j = 0; j < SudokuConstants.GRID_SIZE; j++) {
                 if (grid.getValue(i, j) == SudokuConstants.EMPTY_CELL) {
@@ -30,6 +32,18 @@ public class Solver {
             }
         }
         return null;
+    }
+
+    private int[] fisherYatesShuffle(int[] array, int n) {
+        Random random = new Random();
+        for (int i = n-1; i > 0; i--) {
+            int j = random.nextInt(i+1);
+
+            int temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+        return array;
     }
 
     private void validateGrid(Grid grid) {

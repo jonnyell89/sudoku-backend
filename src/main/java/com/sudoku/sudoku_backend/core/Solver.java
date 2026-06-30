@@ -19,12 +19,26 @@ public class Solver {
 //        }
     }
 
+    private class Counter {
+        private int count = 0;
+        private void incrementCount() { count++; }
+    }
+
     public boolean solve(Grid grid) {
         validateGrid(grid);
         return backtrack(grid);
     }
 
-//    public int countSolutions(Grid grid) {}
+    public int countSolutions(Grid grid) {
+        validateGrid(grid);
+        Grid gridCopy = grid.copy();
+    }
+
+    private boolean countBacktrack(Grid grid) {
+        // Base case:
+
+        // Recursive step:
+    }
 
     private boolean backtrack(Grid grid) {
         // Base case:

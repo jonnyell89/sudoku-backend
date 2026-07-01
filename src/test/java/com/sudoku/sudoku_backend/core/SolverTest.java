@@ -11,6 +11,8 @@ public class SolverTest {
     private Grid grid;
     private Solver solver;
 
+    private static final int MAX_SOLUTIONS = 2;
+
     private static final int[][] easy = new int[][]{
             {4, 1, 0, 0, 6, 0, 0, 7, 0},
             {0, 0, 3, 0, 8, 5, 0, 0, 9},
@@ -206,5 +208,15 @@ public class SolverTest {
     @Nested
     class CountSolutionsTests {
 
+        @BeforeEach
+        void init() {
+            solver = new Solver();
+        }
+
+        @Test
+        void shouldReturnMaxSolutionsWhenGridIsEmpty() {
+            grid = new Grid();
+            assertEquals(MAX_SOLUTIONS, solver.countSolutions(grid));
+        }
     }
 }

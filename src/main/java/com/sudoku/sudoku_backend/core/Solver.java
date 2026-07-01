@@ -8,20 +8,11 @@ public class Solver {
 
     private final Random random = new Random();
 
-    private record Coordinate(int rowIndex, int colIndex) {
-//        private Coordinate {
-//            if (rowIndex < SudokuConstants.MIN_INDEX || rowIndex > SudokuConstants.MAX_INDEX) {
-//                throw new IllegalArgumentException(String.format("rowIndex must be between %d and %d.", SudokuConstants.MIN_INDEX, SudokuConstants.MAX_INDEX));
-//            }
-//            if (colIndex < SudokuConstants.MIN_INDEX || colIndex > SudokuConstants.MAX_INDEX) {
-//                throw new IllegalArgumentException(String.format("colIndex must be between %d and %d.", SudokuConstants.MIN_INDEX, SudokuConstants.MAX_INDEX));
-//            }
-//        }
-    }
+    private record Coordinate(int rowIndex, int colIndex) {}
 
-    private class Counter {
+    private static class Counter {
         private int count = 0;
-        private void incrementCount() { count++; }
+        private void increment() { count++; }
     }
 
     public boolean solve(Grid grid) {
@@ -32,12 +23,9 @@ public class Solver {
     public int countSolutions(Grid grid) {
         validateGrid(grid);
         Grid gridCopy = grid.copy();
-    }
-
-    private boolean countBacktrack(Grid grid) {
-        // Base case:
-
-        // Recursive step:
+        Counter counter = new Counter();
+        enumerate(gridCopy, counter);
+        return counter.count;
     }
 
     private boolean backtrack(Grid grid) {
@@ -47,8 +35,8 @@ public class Solver {
         // Recursive step:
         int rowIndex = coordinate.rowIndex();
         int colIndex = coordinate.colIndex();
-        int[] candidates = fisherYatesShuffle(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9});
-        for (int candidate : candidates) {
+        int[] shuffledCandidates = shuffledCandidates();
+        for (int candidate : shuffledCandidates) {
             if (grid.isLegal(rowIndex, colIndex, candidate)) {
                 grid.setValue(rowIndex, colIndex, candidate);
                 if (backtrack(grid)) return true;
@@ -56,6 +44,27 @@ public class Solver {
             }
         }
         return false;
+    }
+
+    private void enumerate(Grid grid, Counter counter) {
+        // Terminate:
+        if (counter.count >= 2) return;
+        // Base case:
+        Coordinate coordinate = findEmptyCell(grid);
+        if (coordinate == null) {
+            counter.increment();
+            return;
+        }
+        // Recursive step:
+        int rowIndex = coordinate.rowIndex();
+        int colIndex = coordinate.colIndex();
+        for (int candidate : candidates()) {
+            if (grid.isLegal(rowIndex, colIndex, candidate)) {
+                grid.setValue(rowIndex, colIndex, candidate);
+                enumerate(grid, counter);
+                grid.clearValue(rowIndex, colIndex);
+            }
+        }
     }
 
     private Coordinate findEmptyCell(Grid grid) {
@@ -69,7 +78,21 @@ public class Solver {
         return null;
     }
 
-    private int[] fisherYatesShuffle(int[] array) {
+    private int[] candidates() {
+        int[] candidates = new int[SudokuConstants.GRID_SIZE];
+        for (int i = 0; i < candidates.length; i++) {
+            candidates[i] = i + 1;
+        }
+        return candidates;
+    }
+
+    private int[] shuffledCandidates() {
+        int[] candidates = candidates();
+        fisherYatesShuffle(candidates);
+        return candidates;
+    }
+
+    private void fisherYatesShuffle(int[] array) {
         for (int i = array.length-1; i > 0; i--) {
             int j = random.nextInt(i+1);
 
@@ -77,7 +100,6 @@ public class Solver {
             array[i] = array[j];
             array[j] = temp;
         }
-        return array;
     }
 
     private void validateGrid(Grid grid) {

@@ -11,8 +11,6 @@ public class SolverTest {
     private Grid grid;
     private Solver solver;
 
-    private static final int MAX_SOLUTIONS = 2;
-
     private static final int[][] easy = new int[][]{
             {4, 1, 0, 0, 6, 0, 0, 7, 0},
             {0, 0, 3, 0, 8, 5, 0, 0, 9},
@@ -177,7 +175,7 @@ public class SolverTest {
         }
 
         @Test
-        void shouldPreservePreFilledValuesWhenSolvingPartiallyFilledFrid() {
+        void shouldPreservePreFilledValuesWhenSolvingPartiallyFilledGrid() {
             grid = new Grid(extreme);
             solver.solve(grid);
             assertEquals(6, grid.getValue(0, 7));
@@ -214,9 +212,90 @@ public class SolverTest {
         }
 
         @Test
-        void shouldReturnMaxSolutionsWhenGridIsEmpty() {
+        void shouldReturnTwoOnEmptyGrid() {
             grid = new Grid();
-            assertEquals(MAX_SOLUTIONS, solver.countSolutions(grid));
+            assertEquals(2, solver.countSolutions(grid));
+        }
+
+        @Test
+        void shouldReturnOneOnEasyGrid() {
+            grid = new Grid(easy);
+            assertEquals(1, solver.countSolutions(grid));
+        }
+
+        @Test
+        void shouldReturnOneOnMediumGrid() {
+            grid = new Grid(medium);
+            assertEquals(1, solver.countSolutions(grid));
+        }
+
+        @Test
+        void shouldReturnOneOnHardGrid() {
+            grid = new Grid(hard);
+            assertEquals(1, solver.countSolutions(grid));
+        }
+
+        @Test
+        void shouldReturnOneOnExpertGrid() {
+            grid = new Grid(expert);
+            assertEquals(1, solver.countSolutions(grid));
+        }
+
+        @Test
+        void shouldReturnOneOnMasterGrid() {
+            grid = new Grid(master);
+            assertEquals(1, solver.countSolutions(grid));
+        }
+
+        @Test
+        void shouldReturnOneOnExtremeGrid() {
+            grid = new Grid(extreme);
+            assertEquals(1, solver.countSolutions(grid));
+        }
+
+        @Test
+        void shouldThrowWhenGridIsNull() {
+            assertThrows(IllegalArgumentException.class, () -> solver.countSolutions(null));
+        }
+
+        @Test
+        void shouldThrowWhenGridContainsDuplicates() {
+            grid = new Grid(duplicates);
+            assertThrows(IllegalArgumentException.class, () -> solver.countSolutions(grid));
+        }
+
+        @Test
+        void shouldReturnZeroWhenGridIsUnsolvable() {
+            grid = new Grid(unsolvable);
+            assertEquals(0, solver.countSolutions(grid));
+        }
+
+        @Test
+        void shouldNotMutateOriginalGrid() {
+            grid = new Grid(extreme);
+            solver.countSolutions(grid);
+            assertEquals(6, grid.getValue(0, 7));
+            assertEquals(2, grid.getValue(1, 1));
+            assertEquals(3, grid.getValue(1, 3));
+            assertEquals(1, grid.getValue(1, 6));
+            assertEquals(5, grid.getValue(2, 0));
+            assertEquals(8, grid.getValue(2, 3));
+            assertEquals(9, grid.getValue(2, 5));
+            assertEquals(8, grid.getValue(3, 0));
+            assertEquals(5, grid.getValue(3, 4));
+            assertEquals(9, grid.getValue(3, 7));
+            assertEquals(6, grid.getValue(3, 8));
+            assertEquals(4, grid.getValue(4, 1));
+            assertEquals(6, grid.getValue(4, 3));
+            assertEquals(4, grid.getValue(5, 3));
+            assertEquals(3, grid.getValue(5, 8));
+            assertEquals(9, grid.getValue(6, 0));
+            assertEquals(7, grid.getValue(6, 4));
+            assertEquals(5, grid.getValue(6, 6));
+            assertEquals(4, grid.getValue(7, 7));
+            assertEquals(1, grid.getValue(8, 1));
+            assertEquals(9, grid.getValue(8, 3));
+            assertEquals(8, grid.getValue(8, 6));
         }
     }
 }

@@ -25,9 +25,6 @@ public class GridTest {
 
     private static int[][] createValidCells() {
         int[][] cells = new int[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
-//        for (int i = 0; i < cells.length; i++) {
-//            Arrays.fill(cells[i], VALUE);
-//        }
         for (int[] row : cells) {
             Arrays.fill(row, VALUE);
         }
@@ -44,11 +41,6 @@ public class GridTest {
 
         @Test
         void shouldInitialiseAllCellsToEmptyValue() {
-//            for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
-//                for (int cell = 0; cell < grid.getRow(i).length; cell++) {
-//                    assertEquals(SudokuConstants.EMPTY_CELL, cell);
-//                }
-//            }
             for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
                 for (int cell : grid.getRow(i)) {
                     assertEquals(SudokuConstants.EMPTY_CELL, cell);
@@ -72,11 +64,6 @@ public class GridTest {
 
         @Test
         void shouldStoreCorrectValues() {
-//            for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
-//                for (int cell = 0; cell < grid.getRow(i).length; cell++) {
-//                    assertEquals(VALUE, cell);
-//                }
-//            }
             for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
                 for (int cell : grid.getRow(i)) {
                     assertEquals(VALUE, cell);
@@ -572,16 +559,6 @@ public class GridTest {
         void init() {
             grid = new Grid(createValidCells());
         }
-
-//        @Test
-//        void shouldReturnTrueWhenComparingSameInstance() {
-//            assertTrue(grid.equals(grid));
-//        }
-//
-//        @Test
-//        void shouldReturnFalseWhenComparedToNull() {
-//            assertFalse(grid.equals(null));
-//        }
 
         @Test
         void shouldReturnFalseWhenComparedToDifferentType() {

@@ -107,16 +107,6 @@ public class Grid {
         return true;
     }
 
-    private boolean hasDuplicates(int[] unit) {
-        Set<Integer> seen = new HashSet<>();
-        for (int cell : unit) {
-            if (cell != SudokuConstants.EMPTY_CELL && !seen.add(cell)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public Grid copy() {
         return new Grid(this.cells);
     }
@@ -132,6 +122,16 @@ public class Grid {
     @Override
     public int hashCode() {
         return Arrays.deepHashCode(cells);
+    }
+
+    private boolean hasDuplicates(int[] unit) {
+        Set<Integer> seen = new HashSet<>();
+        for (int cell : unit) {
+            if (cell != SudokuConstants.EMPTY_CELL && !seen.add(cell)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void validateCells(int[][] cells) {

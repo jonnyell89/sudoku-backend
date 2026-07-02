@@ -6,13 +6,17 @@ import java.util.Random;
 
 public class Solver {
 
-    private final Random random = new Random();
+    private final Random random;
 
     private record Coordinate(int rowIndex, int colIndex) {}
 
     private static class Counter {
         private int count = 0;
         private void increment() { count++; }
+    }
+
+    public Solver(Random random) {
+        this.random = random;
     }
 
     public boolean solve(Grid grid) {

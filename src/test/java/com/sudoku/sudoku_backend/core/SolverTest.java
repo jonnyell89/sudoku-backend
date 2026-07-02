@@ -4,9 +4,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.Random;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SolverTest {
+
+    private final Random random = new Random();
 
     private Grid grid;
     private Solver solver;
@@ -112,7 +116,7 @@ public class SolverTest {
 
         @BeforeEach
         void init() {
-            solver = new Solver();
+            solver = new Solver(random);
         }
 
         @Test
@@ -208,7 +212,7 @@ public class SolverTest {
 
         @BeforeEach
         void init() {
-            solver = new Solver();
+            solver = new Solver(random);
         }
 
         @Test

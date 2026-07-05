@@ -7,8 +7,18 @@ import java.util.Random;
 public class Generator {
 
     private final Random random;
+    private final Solver solver;
 
-    public Generator(Random random) { this.random = random; }
+    public Generator(Random random) {
+        this.random = random;
+        this.solver = new Solver(random);
+    }
+
+    public Grid generateComplete() {
+        Grid grid = new Grid();
+        solver.solve(grid);
+        return grid;
+    }
 
     private Coordinate[] coordinates() {
         Coordinate[] coordinates = new Coordinate[SudokuConstants.GRID_CELLS];

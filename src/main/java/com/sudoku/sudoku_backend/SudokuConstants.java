@@ -5,6 +5,7 @@ public final class SudokuConstants {
     private SudokuConstants() {}
 
     public static final int GRID_SIZE = 9;
+    public static final int GRID_CELLS = GRID_SIZE * GRID_SIZE;
     public static final int BOX_SIZE = 3;
     public static final int EMPTY_CELL = 0;
     public static final int MIN_INDEX = 0;

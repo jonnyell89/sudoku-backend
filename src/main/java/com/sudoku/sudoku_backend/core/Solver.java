@@ -13,9 +13,7 @@ public class Solver {
         private void increment() { count++; }
     }
 
-    public Solver(Random random) {
-        this.random = random;
-    }
+    public Solver(Random random) { this.random = random; }
 
     public boolean solve(Grid grid) {
         validateGrid(grid);

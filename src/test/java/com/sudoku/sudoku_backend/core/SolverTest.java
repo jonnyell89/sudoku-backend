@@ -70,11 +70,12 @@ public class SolverTest {
             assertFalse(solver.solve(grid));
         }
 
-        @Test
-        void shouldPreservePreFilledValuesWhenSolvingPartiallyFilledGrid() {
-            Grid grid = new Grid(extreme);
+        @ParameterizedTest
+        @MethodSource("com.sudoku.sudoku_backend.core.SolverTest#solvableGrids")
+        void shouldPreservePreFilledValuesWhenSolvingPartiallyFilledGrid(int[][] data) {
+            Grid grid = new Grid(data);
             solver.solve(grid);
-            assertPreFilledValuesPreserved(grid, extreme);
+            assertPreFilledValuesPreserved(grid, data);
         }
     }
 
@@ -111,11 +112,12 @@ public class SolverTest {
             assertEquals(0, solver.countSolutions(grid));
         }
 
-        @Test
-        void shouldNotMutateOriginalGrid() {
-            Grid grid = new Grid(extreme);
+        @ParameterizedTest
+        @MethodSource("com.sudoku.sudoku_backend.core.SolverTest#solvableGrids")
+        void shouldNotMutateOriginalGrid(int[][] data) {
+            Grid grid = new Grid(data);
             solver.countSolutions(grid);
-            assertPreFilledValuesPreserved(grid, extreme);
+            assertPreFilledValuesPreserved(grid, data);
         }
     }
 }

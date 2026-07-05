@@ -90,7 +90,7 @@ public class Solver {
 
     private int[] shuffledCandidates() {
         int[] candidates = candidates();
-        Shuffle.fisherYatesShuffle(candidates, random);
+        Shuffle.fisherYates(candidates, random);
         return candidates;
     }
 

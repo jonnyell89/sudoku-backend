@@ -14,10 +14,35 @@ public class Generator {
         this.solver = new Solver(random);
     }
 
-    public Grid generateComplete() {
+    public Grid generateGrid() {
         Grid grid = new Grid();
         solver.solve(grid);
         return grid;
+    }
+
+    public Puzzle createPuzzle(Grid grid, int target) {
+        if (target < 45 || target > 60) {
+            throw new IllegalArgumentException("Target must be between 45 and 60.");
+        }
+        Grid puzzle = grid.copy();
+        Coordinate[] coordinates = shuffledCoordinates();
+
+        int removals = 0;
+        for (Coordinate coordinate : coordinates) {
+            int rowIndex = coordinate.rowIndex();
+            int colIndex = coordinate.colIndex();
+            int value = puzzle.getValue(rowIndex, colIndex);
+
+            puzzle.clearValue(rowIndex, colIndex);
+
+            if (solver.countSolutions(puzzle) == 1) {
+                removals++;
+                if (removals == target) break;
+            } else {
+                puzzle.setValue(rowIndex, colIndex, value);
+            }
+        }
+        return new Puzzle(grid, puzzle);
     }
 
     private Coordinate[] coordinates() {

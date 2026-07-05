@@ -8,8 +8,6 @@ public class Solver {
 
     private final Random random;
 
-    private record Coordinate(int rowIndex, int colIndex) {}
-
     private static class Counter {
         private int count = 0;
         private void increment() { count++; }

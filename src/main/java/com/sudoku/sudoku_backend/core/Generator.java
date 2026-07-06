@@ -2,6 +2,7 @@ package com.sudoku.sudoku_backend.core;
 
 import com.sudoku.sudoku_backend.SudokuConstants;
 
+import java.util.Objects;
 import java.util.Random;
 
 public class Generator {
@@ -21,6 +22,8 @@ public class Generator {
     }
 
     public Puzzle createPuzzle(Grid grid, int target) {
+        Objects.requireNonNull(grid, "grid should not be null.");
+        grid.validate();
         if (target < 45 || target > 60) {
             throw new IllegalArgumentException("Target must be between 45 and 60.");
         }

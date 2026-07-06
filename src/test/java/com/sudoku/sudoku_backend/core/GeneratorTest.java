@@ -10,10 +10,12 @@ public class GeneratorTest {
     private final Random random = new Random();
 
     private Generator generator;
+    private Solver solver;
 
     @BeforeEach
     void init() {
         generator = new Generator(random);
+        solver = new Solver(random);
     }
 
     @Nested

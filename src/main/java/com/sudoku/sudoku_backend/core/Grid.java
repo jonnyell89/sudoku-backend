@@ -124,6 +124,12 @@ public class Grid {
         return Arrays.deepHashCode(cells);
     }
 
+    public void validate() {
+        if (!isValid()) {
+            throw new IllegalArgumentException("grid must not contain duplicate values in any row, col, or box.");
+        }
+    }
+
     private boolean hasDuplicates(int[] unit) {
         Set<Integer> seen = new HashSet<>();
         for (int cell : unit) {

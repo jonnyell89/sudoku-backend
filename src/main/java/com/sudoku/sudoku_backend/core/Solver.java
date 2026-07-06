@@ -2,6 +2,7 @@ package com.sudoku.sudoku_backend.core;
 
 import com.sudoku.sudoku_backend.SudokuConstants;
 
+import java.util.Objects;
 import java.util.Random;
 
 public class Solver {
@@ -16,12 +17,14 @@ public class Solver {
     public Solver(Random random) { this.random = random; }
 
     public boolean solve(Grid grid) {
-        validateGrid(grid);
+        Objects.requireNonNull(grid, "grid should not be null.");
+        grid.validate();
         return backtrack(grid);
     }
 
     public int countSolutions(Grid grid) {
-        validateGrid(grid);
+        Objects.requireNonNull(grid, "grid should not be null.");
+        grid.validate();
         Grid gridCopy = grid.copy();
         Counter counter = new Counter();
         enumerate(gridCopy, counter);
@@ -90,14 +93,5 @@ public class Solver {
         int[] candidates = candidates();
         Shuffle.fisherYates(candidates, random);
         return candidates;
-    }
-
-    private void validateGrid(Grid grid) {
-        if (grid == null) {
-            throw new IllegalArgumentException("grid should not be null.");
-        }
-        if (!grid.isValid()) {
-            throw new IllegalArgumentException("grid must not contain duplicate values in any row, col, or box.");
-        }
     }
 }

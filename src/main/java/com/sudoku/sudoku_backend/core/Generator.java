@@ -27,6 +27,7 @@ public class Generator {
         if (target < 45 || target > 60) {
             throw new IllegalArgumentException("Target must be between 45 and 60.");
         }
+
         Grid puzzle = grid.copy();
         Coordinate[] coordinates = shuffledCoordinates();
 

@@ -111,6 +111,12 @@ public class Grid {
         return new Grid(this.cells);
     }
 
+    public void validate() {
+        if (!isValid()) {
+            throw new IllegalArgumentException("grid must not contain duplicate values in any row, col, or box.");
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -122,12 +128,6 @@ public class Grid {
     @Override
     public int hashCode() {
         return Arrays.deepHashCode(cells);
-    }
-
-    public void validate() {
-        if (!isValid()) {
-            throw new IllegalArgumentException("grid must not contain duplicate values in any row, col, or box.");
-        }
     }
 
     private boolean hasDuplicates(int[] unit) {

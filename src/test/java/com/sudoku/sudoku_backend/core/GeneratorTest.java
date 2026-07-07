@@ -53,7 +53,7 @@ public class GeneratorTest {
 
                 Grid grid = generator.generateGrid();
                 Puzzle puzzle = generator.createPuzzle(grid, TARGET);
-                assertEquals(1, solver.countSolutions(puzzle.puzzle()), String.format("Test failed for seed %d.", seed));
+                assertEquals(1, solver.countSolutions(puzzle.carved()), String.format("Test failed for seed %d.", seed));
             }
         }
 
@@ -66,8 +66,8 @@ public class GeneratorTest {
 
                 Grid grid = generator.generateGrid();
                 Puzzle puzzle = generator.createPuzzle(grid, TARGET);
-                solver.solve(puzzle.puzzle());
-                assertEquals(puzzle.grid(), puzzle.puzzle(), String.format("Test failed for seed %d.", seed));
+                solver.solve(puzzle.carved());
+                assertEquals(puzzle.complete(), puzzle.carved(), String.format("Test failed for seed %d.", seed));
             }
         }
 
@@ -92,8 +92,8 @@ public class GeneratorTest {
 
                 Grid grid = generator.generateGrid();
                 Puzzle puzzle = generator.createPuzzle(grid, TARGET);
-                Grid carved = puzzle.puzzle();
-                Grid complete = puzzle.grid();
+                Grid carved = puzzle.carved();
+                Grid complete = puzzle.complete();
 
                 for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
                     for (int j = 0; j < SudokuConstants.GRID_SIZE; j++) {

@@ -55,7 +55,7 @@ public class SolverTest {
 
         @Test
         void shouldThrowWhenGridIsNull() {
-            assertThrows(IllegalArgumentException.class, () -> solver.solve(null));
+            assertThrows(NullPointerException.class, () -> solver.solve(null));
         }
 
         @Test
@@ -97,7 +97,7 @@ public class SolverTest {
 
         @Test
         void shouldThrowWhenGridIsNull() {
-            assertThrows(IllegalArgumentException.class, () -> solver.countSolutions(null));
+            assertThrows(NullPointerException.class, () -> solver.countSolutions(null));
         }
 
         @Test

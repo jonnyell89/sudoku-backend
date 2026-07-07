@@ -28,25 +28,25 @@ public class Generator {
             throw new IllegalArgumentException("Target must be between 45 and 60.");
         }
 
-        Grid puzzle = grid.copy();
+        Grid workingGrid = grid.copy();
         Coordinate[] coordinates = shuffledCoordinates();
 
         int removals = 0;
         for (Coordinate coordinate : coordinates) {
             int rowIndex = coordinate.rowIndex();
             int colIndex = coordinate.colIndex();
-            int value = puzzle.getValue(rowIndex, colIndex);
+            int value = workingGrid.getValue(rowIndex, colIndex);
 
-            puzzle.clearValue(rowIndex, colIndex);
+            workingGrid.clearValue(rowIndex, colIndex);
 
-            if (solver.countSolutions(puzzle) == 1) {
+            if (solver.countSolutions(workingGrid) == 1) {
                 removals++;
                 if (removals == target) break;
             } else {
-                puzzle.setValue(rowIndex, colIndex, value);
+                workingGrid.setValue(rowIndex, colIndex, value);
             }
         }
-        return new Puzzle(grid, puzzle);
+        return new Puzzle(grid, workingGrid);
     }
 
     private Coordinate[] coordinates() {

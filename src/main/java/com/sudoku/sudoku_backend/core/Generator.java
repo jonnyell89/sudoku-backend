@@ -24,8 +24,8 @@ public class Generator {
     public Puzzle createPuzzle(Grid grid, int target) {
         Objects.requireNonNull(grid, "grid should not be null.");
         grid.validate();
-        if (target < 45 || target > 60) {
-            throw new IllegalArgumentException("Target must be between 45 and 60.");
+        if (target < 45 || target > 57) {
+            throw new IllegalArgumentException("Target must be between 45 and 57.");
         }
 
         Grid workingGrid = grid.copy();
@@ -41,7 +41,7 @@ public class Generator {
 
             if (solver.countSolutions(workingGrid) == 1) {
                 removals++;
-                if (removals == target) break;
+                if (removals >= target) break;
             } else {
                 workingGrid.setValue(rowIndex, colIndex, value);
             }

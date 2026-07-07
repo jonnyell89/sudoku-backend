@@ -18,66 +18,66 @@ public class Grid {
     public Grid(int[][] cells) {
         validateCells(cells);
         int[][] copy = new int[cells.length][];
-        for (int i = 0; i < cells.length; i++) {
-            copy[i] = Arrays.copyOf(cells[i], cells[i].length);
+        for (int row = 0; row < cells.length; row++) {
+            copy[row] = Arrays.copyOf(cells[row], cells[row].length);
         }
         this.cells = copy;
     }
 
-    public int[] getRow(int rowIndex) {
-        validateRowIndex(rowIndex);
-        return Arrays.copyOf(this.cells[rowIndex], this.cells[rowIndex].length);
+    public int[] getRow(int row) {
+        validateRow(row);
+        return Arrays.copyOf(this.cells[row], this.cells[row].length);
     }
 
-    public int[] getCol(int colIndex) {
-        validateColIndex(colIndex);
-        int[] col = new int[this.cells.length];
-        for (int i = 0; i < col.length; i++) {
-            col[i] = this.cells[i][colIndex];
+    public int[] getCol(int col) {
+        validateCol(col);
+        int[] copy = new int[this.cells.length];
+        for (int row = 0; row < copy.length; row++) {
+            copy[row] = this.cells[row][col];
         }
-        return col;
+        return copy;
     }
 
-    public int[] getBox(int rowIndex, int colIndex) {
-        validateIndices(rowIndex, colIndex);
+    public int[] getBox(int row, int col) {
+        validateIndices(row, col);
         int[] box = new int[SudokuConstants.BOX_SIZE * SudokuConstants.BOX_SIZE];
-        int startRow = Math.floorDiv(rowIndex, SudokuConstants.BOX_SIZE) * SudokuConstants.BOX_SIZE;
-        int startCol = Math.floorDiv(colIndex, SudokuConstants.BOX_SIZE) * SudokuConstants.BOX_SIZE;
+        int startRow = Math.floorDiv(row, SudokuConstants.BOX_SIZE) * SudokuConstants.BOX_SIZE;
+        int startCol = Math.floorDiv(col, SudokuConstants.BOX_SIZE) * SudokuConstants.BOX_SIZE;
         int boxIndex = 0;
-        for (int i = 0; i < SudokuConstants.BOX_SIZE; i++) {
-            for (int j = 0; j < SudokuConstants.BOX_SIZE; j++) {
-                box[boxIndex++] = this.cells[startRow + i][startCol + j];
+        for (int boxRow = 0; boxRow < SudokuConstants.BOX_SIZE; boxRow++) {
+            for (int boxCol = 0; boxCol < SudokuConstants.BOX_SIZE; boxCol++) {
+                box[boxIndex++] = this.cells[startRow + boxRow][startCol + boxCol];
             }
         }
         return box;
     }
 
-    public int getValue(int rowIndex, int colIndex) {
-        validateIndices(rowIndex, colIndex);
-        return this.cells[rowIndex][colIndex];
+    public int getValue(int row, int col) {
+        validateIndices(row, col);
+        return this.cells[row][col];
     }
 
-    public void setValue(int rowIndex, int colIndex, int value) {
-        validateIndices(rowIndex, colIndex);
+    public void setValue(int row, int col, int value) {
+        validateIndices(row, col);
         validateCell(value);
-        this.cells[rowIndex][colIndex] = value;
+        this.cells[row][col] = value;
     }
 
-    public void clearValue(int rowIndex, int colIndex) {
-        validateIndices(rowIndex, colIndex);
-        this.cells[rowIndex][colIndex] = SudokuConstants.EMPTY_CELL;
+    public void clearValue(int row, int col) {
+        validateIndices(row, col);
+        this.cells[row][col] = SudokuConstants.EMPTY_CELL;
     }
 
-    public boolean isLegal(int rowIndex, int colIndex, int value) {
-        validateIndices(rowIndex, colIndex);
+    public boolean isLegal(int row, int col, int value) {
+        validateIndices(row, col);
         validateCell(value);
-        for (int cell : getRow(rowIndex)) {
+        for (int cell : getRow(row)) {
             if (cell == value) return false;
         }
-        for (int cell : getCol(colIndex)) {
+        for (int cell : getCol(col)) {
             if (cell == value) return false;
         }
-        for (int cell : getBox(rowIndex, colIndex)) {
+        for (int cell : getBox(row, col)) {
             if (cell == value) return false;
         }
         return true;
@@ -95,13 +95,13 @@ public class Grid {
     }
 
     public boolean isValid() {
-        for (int i = 0; i < this.cells.length; i++) {
-            if (hasDuplicates(getRow(i))) return false;
-            if (hasDuplicates(getCol(i))) return false;
+        for (int index = 0; index < this.cells.length; index++) {
+            if (hasDuplicates(getRow(index))) return false;
+            if (hasDuplicates(getCol(index))) return false;
         }
-        for (int i = 0; i < this.cells.length; i += SudokuConstants.BOX_SIZE) {
-            for (int j = 0; j < this.cells[i].length; j += SudokuConstants.BOX_SIZE) {
-                if (hasDuplicates(getBox(i, j))) return false;
+        for (int row = 0; row < this.cells.length; row += SudokuConstants.BOX_SIZE) {
+            for (int col = 0; col < this.cells[row].length; col += SudokuConstants.BOX_SIZE) {
+                if (hasDuplicates(getBox(row, col))) return false;
             }
         }
         return true;
@@ -118,10 +118,10 @@ public class Grid {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Grid grid = (Grid) o;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Grid grid = (Grid) object;
         return Objects.deepEquals(cells, grid.cells);
     }
 
@@ -147,15 +147,15 @@ public class Grid {
         if (cells.length != SudokuConstants.GRID_SIZE) {
             throw new IllegalArgumentException(String.format("cells should contain %d rows.", SudokuConstants.GRID_SIZE));
         }
-        for (int i = 0; i < cells.length; i++) {
-            if (cells[i] == null) {
-                throw new IllegalArgumentException(String.format("Row %d should not be null.", i));
+        for (int row = 0; row < cells.length; row++) {
+            if (cells[row] == null) {
+                throw new IllegalArgumentException(String.format("Row %d should not be null.", row));
             }
-            if (cells[i].length != SudokuConstants.GRID_SIZE) {
-                throw new IllegalArgumentException(String.format("Row %d should contain %d cells.", i, SudokuConstants.GRID_SIZE));
+            if (cells[row].length != SudokuConstants.GRID_SIZE) {
+                throw new IllegalArgumentException(String.format("Row %d should contain %d cells.", row, SudokuConstants.GRID_SIZE));
             }
-            for (int j = 0; j < cells[i].length; j++) {
-                validateCell(cells[i][j]);
+            for (int col = 0; col < cells[row].length; col++) {
+                validateCell(cells[row][col]);
             }
         }
     }
@@ -166,20 +166,20 @@ public class Grid {
         }
     }
 
-    private void validateRowIndex(int rowIndex) {
-        if (rowIndex < SudokuConstants.MIN_INDEX || rowIndex > SudokuConstants.MAX_INDEX) {
-            throw new IllegalArgumentException(String.format("rowIndex must be between %d and %d.", SudokuConstants.MIN_INDEX, SudokuConstants.MAX_INDEX));
+    private void validateRow(int row) {
+        if (row < SudokuConstants.MIN_INDEX || row > SudokuConstants.MAX_INDEX) {
+            throw new IllegalArgumentException(String.format("row must be between %d and %d.", SudokuConstants.MIN_INDEX, SudokuConstants.MAX_INDEX));
         }
     }
 
-    private void validateColIndex(int colIndex) {
-        if (colIndex < SudokuConstants.MIN_INDEX || colIndex > SudokuConstants.MAX_INDEX) {
-            throw new IllegalArgumentException(String.format("colIndex must be between %d and %d.", SudokuConstants.MIN_INDEX, SudokuConstants.MAX_INDEX));
+    private void validateCol(int col) {
+        if (col < SudokuConstants.MIN_INDEX || col > SudokuConstants.MAX_INDEX) {
+            throw new IllegalArgumentException(String.format("col must be between %d and %d.", SudokuConstants.MIN_INDEX, SudokuConstants.MAX_INDEX));
         }
     }
 
-    private void validateIndices(int rowIndex, int colIndex) {
-        validateRowIndex(rowIndex);
-        validateColIndex(colIndex);
+    private void validateIndices(int row, int col) {
+        validateRow(row);
+        validateCol(col);
     }
 }

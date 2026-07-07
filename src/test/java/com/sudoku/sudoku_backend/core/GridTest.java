@@ -13,17 +13,17 @@ public class GridTest {
 
     private Grid grid;
 
-    private static final int ROW_INDEX = 0;
-    private static final int BELOW_MIN_ROW_INDEX = -1;
-    private static final int ABOVE_MAX_ROW_INDEX = 9;
-    private static final int COL_INDEX = 0;
-    private static final int BELOW_MIN_COL_INDEX = -1;
-    private static final int ABOVE_MAX_COL_INDEX = 9;
+    private static final int ROW = 0;
+    private static final int BELOW_MIN_ROW = -1;
+    private static final int ABOVE_MAX_ROW = 9;
+    private static final int COL = 0;
+    private static final int BELOW_MIN_COL = -1;
+    private static final int ABOVE_MAX_COL = 9;
     private static final int VALUE = 1;
     private static final int BELOW_MIN_VALUE = -1;
     private static final int ABOVE_MAX_VALUE = 10;
 
-    private static int[][] createValidCells() {
+    private static int[][] createCells() {
         int[][] cells = new int[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
         for (int[] row : cells) {
             Arrays.fill(row, VALUE);
@@ -40,9 +40,9 @@ public class GridTest {
         }
 
         @Test
-        void shouldInitialiseAllCellsToEmptyValue() {
-            for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
-                for (int cell : grid.getRow(i)) {
+        void shouldContainEmptyCellsOnly() {
+            for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
+                for (int cell : grid.getRow(row)) {
                     assertEquals(SudokuConstants.EMPTY_CELL, cell);
                 }
             }
@@ -54,18 +54,18 @@ public class GridTest {
 
         @BeforeEach
         void init() {
-            grid = new Grid(createValidCells());
+            grid = new Grid(createCells());
         }
 
         @Test
-        void shouldAcceptValidCells() {
-            assertDoesNotThrow(() -> new Grid(createValidCells()));
+        void shouldAcceptCells() {
+            assertDoesNotThrow(() -> new Grid(createCells()));
         }
 
         @Test
-        void shouldStoreCorrectValues() {
-            for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
-                for (int cell : grid.getRow(i)) {
+        void shouldContainCorrectValues() {
+            for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
+                for (int cell : grid.getRow(row)) {
                     assertEquals(VALUE, cell);
                 }
             }
@@ -73,10 +73,10 @@ public class GridTest {
 
         @Test
         void shouldDeepCopyCells() {
-            int[][] cells = createValidCells();
-            Grid copiedGrid = new Grid(cells);
-            cells[ROW_INDEX][COL_INDEX] = VALUE + 1;
-            assertEquals(VALUE, copiedGrid.getRow(ROW_INDEX)[COL_INDEX]);
+            int[][] cells = createCells();
+            Grid copy = new Grid(cells);
+            cells[ROW][COL] = VALUE + 1;
+            assertEquals(VALUE, copy.getRow(ROW)[COL]);
         }
 
         @Test
@@ -98,36 +98,36 @@ public class GridTest {
 
         @Test
         void shouldThrowWhenRowIsNull() {
-            int[][] cells = createValidCells();
-            cells[ROW_INDEX] = null;
+            int[][] cells = createCells();
+            cells[ROW] = null;
             assertThrows(IllegalArgumentException.class, () -> new Grid(cells));
         }
 
         @Test
         void shouldThrowWhenRowHasTooFewCells() {
-            int[][] cells = createValidCells();
-            cells[ROW_INDEX] = new int[SudokuConstants.GRID_SIZE - 1];
+            int[][] cells = createCells();
+            cells[ROW] = new int[SudokuConstants.GRID_SIZE - 1];
             assertThrows(IllegalArgumentException.class, () -> new Grid(cells));
         }
 
         @Test
         void shouldThrowWhenRowHasTooManyCells() {
-            int[][] cells = createValidCells();
-            cells[ROW_INDEX] = new int[SudokuConstants.GRID_SIZE + 1];
+            int[][] cells = createCells();
+            cells[ROW] = new int[SudokuConstants.GRID_SIZE + 1];
             assertThrows(IllegalArgumentException.class, () -> new Grid(cells));
         }
 
         @Test
-        void shouldThrowWhenCellValueIsBelowLowerBound() {
-            int[][] cells = createValidCells();
-            cells[ROW_INDEX][COL_INDEX] = BELOW_MIN_VALUE;
+        void shouldThrowWhenValueIsBelowMin() {
+            int[][] cells = createCells();
+            cells[ROW][COL] = BELOW_MIN_VALUE;
             assertThrows(IllegalArgumentException.class, () -> new Grid(cells));
         }
 
         @Test
-        void shouldThrowWhenCellValueIsAboveUpperBound() {
-            int[][] cells = createValidCells();
-            cells[ROW_INDEX][COL_INDEX] = ABOVE_MAX_VALUE;
+        void shouldThrowWhenValueIsAboveMax() {
+            int[][] cells = createCells();
+            cells[ROW][COL] = ABOVE_MAX_VALUE;
             assertThrows(IllegalArgumentException.class, () -> new Grid(cells));
         }
     }
@@ -137,31 +137,31 @@ public class GridTest {
 
         @BeforeEach
         void init() {
-            grid = new Grid(createValidCells());
+            grid = new Grid(createCells());
         }
 
         @Test
-        void shouldReturnRowOfCorrectLength() {
-            for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
-                assertEquals(SudokuConstants.GRID_SIZE, grid.getRow(i).length);
+        void shouldReturnRowWithCorrectLength() {
+            for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
+                assertEquals(SudokuConstants.GRID_SIZE, grid.getRow(row).length);
             }
         }
 
         @Test
-        void shouldThrowWhenRowIndexIsBelowLowerBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getRow(BELOW_MIN_ROW_INDEX));
+        void shouldThrowWhenRowIsBelowMin() {
+            assertThrows(IllegalArgumentException.class, () -> grid.getRow(BELOW_MIN_ROW));
         }
 
         @Test
-        void shouldThrowWhenRowIndexIsAboveUpperBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getRow(ABOVE_MAX_ROW_INDEX));
+        void shouldThrowWhenRowIsAboveMax() {
+            assertThrows(IllegalArgumentException.class, () -> grid.getRow(ABOVE_MAX_ROW));
         }
 
         @Test
         void shouldReturnDefensiveCopy() {
-            int[] copiedRow = grid.getRow(ROW_INDEX);
-            copiedRow[COL_INDEX] = VALUE + 1;
-            assertEquals(VALUE, grid.getRow(ROW_INDEX)[COL_INDEX]);
+            int[] copy = grid.getRow(ROW);
+            copy[COL] = VALUE + 1;
+            assertEquals(VALUE, grid.getRow(ROW)[COL]);
         }
     }
 
@@ -170,31 +170,31 @@ public class GridTest {
 
         @BeforeEach
         void init() {
-            grid = new Grid(createValidCells());
+            grid = new Grid(createCells());
         }
 
         @Test
-        void shouldReturnColOfCorrectLength() {
-            for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
-                assertEquals(SudokuConstants.GRID_SIZE, grid.getCol(i).length);
+        void shouldReturnColWithCorrectLength() {
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
+                assertEquals(SudokuConstants.GRID_SIZE, grid.getCol(col).length);
             }
         }
 
         @Test
-        void shouldThrowWhenColIndexIsBelowLowerBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getCol(BELOW_MIN_COL_INDEX));
+        void shouldThrowWhenColIsBelowMin() {
+            assertThrows(IllegalArgumentException.class, () -> grid.getCol(BELOW_MIN_COL));
         }
 
         @Test
-        void shouldThrowWhenColIndexIsAboveUpperBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getCol(ABOVE_MAX_COL_INDEX));
+        void shouldThrowWhenColIsAboveMax() {
+            assertThrows(IllegalArgumentException.class, () -> grid.getCol(ABOVE_MAX_COL));
         }
 
         @Test
         void shouldReturnDefensiveCopy() {
-            int[] colCopy = grid.getCol(COL_INDEX);
-            colCopy[ROW_INDEX] = VALUE + 1;
-            assertEquals(VALUE, grid.getCol(COL_INDEX)[ROW_INDEX]);
+            int[] copy = grid.getCol(COL);
+            copy[ROW] = VALUE + 1;
+            assertEquals(VALUE, grid.getCol(COL)[ROW]);
         }
     }
 
@@ -203,36 +203,36 @@ public class GridTest {
 
         @BeforeEach
         void init() {
-            grid = new Grid(createValidCells());
+            grid = new Grid(createCells());
         }
 
         @Test
-        void shouldReturnBoxOfCorrectLength() {
-            for (int i = 0; i < SudokuConstants.BOX_SIZE * SudokuConstants.BOX_SIZE; i++) {
-                for (int j = 0; j < grid.getRow(i).length; j++) {
-                    assertEquals(SudokuConstants.GRID_SIZE, grid.getBox(i, j).length);
+        void shouldReturnBoxWithCorrectLength() {
+            for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
+                for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
+                    assertEquals(SudokuConstants.GRID_SIZE, grid.getBox(row, col).length);
                 }
             }
         }
 
         @Test
-        void shouldThrowWhenRowIndexIsBelowLowerBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getBox(BELOW_MIN_ROW_INDEX, COL_INDEX));
+        void shouldThrowWhenRowIsBelowMin() {
+            assertThrows(IllegalArgumentException.class, () -> grid.getBox(BELOW_MIN_ROW, COL));
         }
 
         @Test
-        void shouldThrowWhenRowIndexIsAboveUpperBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getBox(ABOVE_MAX_ROW_INDEX, COL_INDEX));
+        void shouldThrowWhenRowIsAboveMax() {
+            assertThrows(IllegalArgumentException.class, () -> grid.getBox(ABOVE_MAX_ROW, COL));
         }
 
         @Test
-        void shouldThrowWhenColIndexIsBelowLowerBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getBox(ROW_INDEX, BELOW_MIN_COL_INDEX));
+        void shouldThrowWhenColIsBelowMin() {
+            assertThrows(IllegalArgumentException.class, () -> grid.getBox(ROW, BELOW_MIN_COL));
         }
 
         @Test
-        void shouldThrowWhenColIndexIsAboveUpperBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getBox(ROW_INDEX, ABOVE_MAX_COL_INDEX));
+        void shouldThrowWhenColIsAboveMax() {
+            assertThrows(IllegalArgumentException.class, () -> grid.getBox(ROW, ABOVE_MAX_COL));
         }
 
         @Test
@@ -242,7 +242,7 @@ public class GridTest {
             cells[1][0] = 4; cells[1][1] = 5; cells[1][2] = 6;
             cells[2][0] = 7; cells[2][1] = 8; cells[2][2] = 9;
             grid = new Grid(cells);
-            assertArrayEquals(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9}, grid.getBox(ROW_INDEX, COL_INDEX));
+            assertArrayEquals(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9}, grid.getBox(ROW, COL));
         }
 
         @Test
@@ -265,9 +265,9 @@ public class GridTest {
 
         @Test
         void shouldReturnDefensiveCopy() {
-            int[] boxCopy = grid.getBox(ROW_INDEX, COL_INDEX);
-            boxCopy[ROW_INDEX] = VALUE + 1;
-            assertEquals(VALUE, grid.getBox(ROW_INDEX, COL_INDEX)[ROW_INDEX]);
+            int[] copy = grid.getBox(ROW, COL);
+            copy[ROW] = VALUE + 1;
+            assertEquals(VALUE, grid.getBox(ROW, COL)[ROW]);
         }
     }
 
@@ -276,32 +276,32 @@ public class GridTest {
 
         @BeforeEach
         void init() {
-            grid = new Grid(createValidCells());
+            grid = new Grid(createCells());
         }
 
         @Test
         void shouldReturnCorrectValue() {
-            assertEquals(VALUE, grid.getValue(ROW_INDEX, COL_INDEX));
+            assertEquals(VALUE, grid.getValue(ROW, COL));
         }
 
         @Test
-        void shouldThrowWhenRowIndexIsBelowLowerBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getValue(BELOW_MIN_ROW_INDEX, COL_INDEX));
+        void shouldThrowWhenRowIsBelowMin() {
+            assertThrows(IllegalArgumentException.class, () -> grid.getValue(BELOW_MIN_ROW, COL));
         }
 
         @Test
-        void shouldThrowWhenRowIndexIsAboveUpperBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getValue(ABOVE_MAX_ROW_INDEX, COL_INDEX));
+        void shouldThrowWhenRowIsAboveMax() {
+            assertThrows(IllegalArgumentException.class, () -> grid.getValue(ABOVE_MAX_ROW, COL));
         }
 
         @Test
-        void shouldThrowWhenColIndexIsBelowLowerBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getValue(ROW_INDEX, BELOW_MIN_COL_INDEX));
+        void shouldThrowWhenColIsBelowMin() {
+            assertThrows(IllegalArgumentException.class, () -> grid.getValue(ROW, BELOW_MIN_COL));
         }
 
         @Test
-        void shouldThrowWhenColIndexIsAboveUpperBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getValue(ROW_INDEX, ABOVE_MAX_COL_INDEX));
+        void shouldThrowWhenColIsAboveMax() {
+            assertThrows(IllegalArgumentException.class, () -> grid.getValue(ROW, ABOVE_MAX_COL));
         }
     }
 
@@ -310,43 +310,43 @@ public class GridTest {
 
         @BeforeEach
         void init() {
-            grid = new Grid(createValidCells());
+            grid = new Grid(createCells());
         }
 
         @Test
-        void shouldSetCorrectCellValue() {
-            grid.setValue(ROW_INDEX, COL_INDEX, VALUE + 1);
-            assertEquals(VALUE + 1, grid.getValue(ROW_INDEX, COL_INDEX));
+        void shouldSetCorrectValue() {
+            grid.setValue(ROW, COL, VALUE + 1);
+            assertEquals(VALUE + 1, grid.getValue(ROW, COL));
         }
 
         @Test
-        void shouldThrowWhenRowIndexIsBelowLowerBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.setValue(BELOW_MIN_ROW_INDEX, COL_INDEX, VALUE));
+        void shouldThrowWhenRowIsBelowMin() {
+            assertThrows(IllegalArgumentException.class, () -> grid.setValue(BELOW_MIN_ROW, COL, VALUE));
         }
 
         @Test
-        void shouldThrowWhenRowIndexIsAboveUpperBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ABOVE_MAX_ROW_INDEX, COL_INDEX, VALUE));
+        void shouldThrowWhenRowIsAboveMax() {
+            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ABOVE_MAX_ROW, COL, VALUE));
         }
 
         @Test
-        void shouldThrowWhenColIndexIsBelowLowerBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW_INDEX, BELOW_MIN_COL_INDEX, VALUE));
+        void shouldThrowWhenColIsBelowMin() {
+            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW, BELOW_MIN_COL, VALUE));
         }
 
         @Test
-        void shouldThrowWhenColIndexIsAboveUpperBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW_INDEX, ABOVE_MAX_COL_INDEX, VALUE));
+        void shouldThrowWhenColIsAboveMax() {
+            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW, ABOVE_MAX_COL, VALUE));
         }
 
         @Test
-        void shouldThrowWhenCellValueIsBelowLowerBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW_INDEX, COL_INDEX, BELOW_MIN_VALUE));
+        void shouldThrowWhenValueIsBelowMin() {
+            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW, COL, BELOW_MIN_VALUE));
         }
 
         @Test
-        void shouldThrowWhenCellValueIsAboveUpperBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW_INDEX, COL_INDEX, ABOVE_MAX_VALUE));
+        void shouldThrowWhenValueIsAboveMax() {
+            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW, COL, ABOVE_MAX_VALUE));
         }
     }
 
@@ -355,33 +355,33 @@ public class GridTest {
 
         @BeforeEach
         void init() {
-            grid = new Grid(createValidCells());
+            grid = new Grid(createCells());
         }
 
         @Test
-        void shouldClearCorrectCellValue() {
-            grid.clearValue(ROW_INDEX, COL_INDEX);
-            assertEquals(SudokuConstants.EMPTY_CELL, grid.getValue(ROW_INDEX, COL_INDEX));
+        void shouldClearCorrectValue() {
+            grid.clearValue(ROW, COL);
+            assertEquals(SudokuConstants.EMPTY_CELL, grid.getValue(ROW, COL));
         }
 
         @Test
-        void shouldThrowWhenRowIndexIsBelowLowerBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.clearValue(BELOW_MIN_ROW_INDEX, COL_INDEX));
+        void shouldThrowWhenRowIsBelowMin() {
+            assertThrows(IllegalArgumentException.class, () -> grid.clearValue(BELOW_MIN_ROW, COL));
         }
 
         @Test
-        void shouldThrowWhenRowIndexIsAboveUpperBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.clearValue(ABOVE_MAX_ROW_INDEX, COL_INDEX));
+        void shouldThrowWhenRowIsAboveMax() {
+            assertThrows(IllegalArgumentException.class, () -> grid.clearValue(ABOVE_MAX_ROW, COL));
         }
 
         @Test
-        void shouldThrowWhenColIndexIsBelowLowerBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.clearValue(ROW_INDEX, BELOW_MIN_COL_INDEX));
+        void shouldThrowWhenColIsBelowMin() {
+            assertThrows(IllegalArgumentException.class, () -> grid.clearValue(ROW, BELOW_MIN_COL));
         }
 
         @Test
-        void shouldThrowWhenColIndexIsAboveUpperBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.clearValue(ROW_INDEX, ABOVE_MAX_COL_INDEX));
+        void shouldThrowWhenColIsAboveMax() {
+            assertThrows(IllegalArgumentException.class, () -> grid.clearValue(ROW, ABOVE_MAX_COL));
         }
     }
 
@@ -390,66 +390,66 @@ public class GridTest {
 
         @BeforeEach
         void init() {
-            grid = new Grid(createValidCells());
+            grid = new Grid(createCells());
         }
 
         @Test
         void shouldReturnTrueWhenPlacementIsLegal() {
-            assertTrue(grid.isLegal(ROW_INDEX, COL_INDEX, VALUE + 1));
+            assertTrue(grid.isLegal(ROW, COL, VALUE + 1));
         }
 
         @Test
-        void shouldReturnFalseWhenCellValueExistsInRow() {
+        void shouldReturnFalseWhenValueAlreadyExistsInRow() {
             int[][] cells = new int[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
-            cells[ROW_INDEX][SudokuConstants.MAX_INDEX] = VALUE + 1;
+            cells[ROW][SudokuConstants.MAX_INDEX] = VALUE + 1;
             grid = new Grid(cells);
-            assertFalse(grid.isLegal(ROW_INDEX, COL_INDEX, VALUE + 1));
+            assertFalse(grid.isLegal(ROW, COL, VALUE + 1));
         }
 
         @Test
-        void shouldReturnFalseWhenCellValueExistsInCol() {
+        void shouldReturnFalseWhenValueAlreadyExistsInCol() {
             int[][] cells = new int[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
-            cells[SudokuConstants.MAX_INDEX][COL_INDEX] = VALUE + 1;
+            cells[SudokuConstants.MAX_INDEX][COL] = VALUE + 1;
             grid = new Grid(cells);
-            assertFalse(grid.isLegal(ROW_INDEX, COL_INDEX, VALUE + 1));
+            assertFalse(grid.isLegal(ROW, COL, VALUE + 1));
         }
 
         @Test
-        void shouldReturnFalseWhenCellValueExistsInBox() {
+        void shouldReturnFalseWhenValueAlreadyExistsInBox() {
             int[][] cells = new int[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
             cells[SudokuConstants.BOX_SIZE - 1][SudokuConstants.BOX_SIZE - 1] = VALUE + 1;
             grid = new Grid(cells);
-            assertFalse(grid.isLegal(ROW_INDEX, COL_INDEX, VALUE + 1));
+            assertFalse(grid.isLegal(ROW, COL, VALUE + 1));
         }
 
         @Test
-        void shouldThrowWhenRowIndexIsBelowLowerBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(BELOW_MIN_ROW_INDEX, COL_INDEX, VALUE));
+        void shouldThrowWhenRowIsBelowMin() {
+            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(BELOW_MIN_ROW, COL, VALUE));
         }
 
         @Test
-        void shouldThrowWhenRowIndexIsAboveUpperBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ABOVE_MAX_ROW_INDEX, COL_INDEX, VALUE));
+        void shouldThrowWhenRowIsAboveMax() {
+            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ABOVE_MAX_ROW, COL, VALUE));
         }
 
         @Test
-        void shouldThrowWhenColIndexIsBelowLowerBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ROW_INDEX, BELOW_MIN_COL_INDEX, VALUE));
+        void shouldThrowWhenColIsBelowMin() {
+            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ROW, BELOW_MIN_COL, VALUE));
         }
 
         @Test
-        void shouldThrowWhenColIndexIsAboveUpperBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ROW_INDEX, ABOVE_MAX_COL_INDEX, VALUE));
+        void shouldThrowWhenColIsAboveMax() {
+            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ROW, ABOVE_MAX_COL, VALUE));
         }
 
         @Test
-        void shouldThrowWhenCellValueIsBelowLowerBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ROW_INDEX, COL_INDEX, BELOW_MIN_VALUE));
+        void shouldThrowWhenValueIsBelowMin() {
+            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ROW, COL, BELOW_MIN_VALUE));
         }
 
         @Test
-        void shouldThrowWhenCellValueIsAboveUpperBound() {
-            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ROW_INDEX, COL_INDEX, ABOVE_MAX_VALUE));
+        void shouldThrowWhenValueIsAboveMax() {
+            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ROW, COL, ABOVE_MAX_VALUE));
         }
     }
 
@@ -458,13 +458,13 @@ public class GridTest {
 
         @Test
         void shouldReturnTrueWhenGridContainsNoEmptyCells() {
-            grid = new Grid(createValidCells());
+            grid = new Grid(createCells());
             assertTrue(grid.isFull());
         }
 
         @Test
         void shouldReturnFalseWhenGridContainsAnEmptyCell() {
-            int[][] cells = createValidCells();
+            int[][] cells = createCells();
             cells[8][8] = SudokuConstants.EMPTY_CELL;
             grid = new Grid(cells);
             assertFalse(grid.isFull());
@@ -535,20 +535,20 @@ public class GridTest {
 
         @BeforeEach
         void init() {
-            grid = new Grid(createValidCells());
+            grid = new Grid(createCells());
         }
 
         @Test
-        void shouldReturnCopyOfGrid() {
-            Grid gridCopy = grid.copy();
-            assertEquals(grid, gridCopy);
+        void shouldReturnGridCopy() {
+            Grid copy = grid.copy();
+            assertEquals(grid, copy);
         }
 
         @Test
-        void shouldReturnIndependentCopyOfGrid() {
-            Grid gridCopy = grid.copy();
-            gridCopy.setValue(ROW_INDEX, COL_INDEX, VALUE + 1);
-            assertNotEquals(grid, gridCopy);
+        void shouldReturnIndependentGridCopy() {
+            Grid copy = grid.copy();
+            copy.setValue(ROW, COL, VALUE + 1);
+            assertNotEquals(grid, copy);
         }
     }
 
@@ -557,7 +557,7 @@ public class GridTest {
 
         @BeforeEach
         void init() {
-            grid = new Grid(createValidCells());
+            grid = new Grid(createCells());
         }
 
         @Test
@@ -572,7 +572,7 @@ public class GridTest {
 
         @Test
         void shouldReturnSameHashCodesForEqualGrids() {
-            grid = new Grid(createValidCells());
+            grid = new Grid(createCells());
             Grid gridCopy = grid.copy();
             assertEquals(grid.hashCode(), gridCopy.hashCode());
         }

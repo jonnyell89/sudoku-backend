@@ -172,16 +172,16 @@ public class GeneratorTest {
             Grid expectedGrid = expectedGenerator.generateGrid();
             Grid actualGrid = actualGenerator.generateGrid();
 
-            Puzzle puzzleOne = expectedGenerator.createPuzzle(expectedGrid, TARGET);
-            Puzzle puzzleTwo = actualGenerator.createPuzzle(actualGrid, TARGET);
+            Puzzle expectedPuzzle = expectedGenerator.createPuzzle(expectedGrid, TARGET);
+            Puzzle actualPuzzle = actualGenerator.createPuzzle(actualGrid, TARGET);
 
-            Grid carvedGridOne = puzzleOne.carved();
-            Grid carvedGridTwo = puzzleTwo.carved();
+            Grid expectedCarvedGrid = expectedPuzzle.carved();
+            Grid actualCarvedGrid = actualPuzzle.carved();
 
             for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
                 for (int j = 0; j < SudokuConstants.GRID_SIZE; j++) {
-                    int expectedCell = carvedGridOne.getValue(i, j);
-                    int actualCell = carvedGridTwo.getValue(i, j);
+                    int expectedCell = expectedCarvedGrid.getValue(i, j);
+                    int actualCell = actualCarvedGrid.getValue(i, j);
                     assertEquals(expectedCell, actualCell);
                 }
             }

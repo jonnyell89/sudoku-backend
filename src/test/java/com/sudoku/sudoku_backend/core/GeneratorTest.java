@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GeneratorTest {
 
@@ -26,6 +25,17 @@ public class GeneratorTest {
     @Nested
     class GenerateGridTests {
 
+        @Test
+        void shouldReturnFullGrid() {
+            Grid grid = generator.generateGrid();
+            assertTrue(grid.isFull());
+        }
+
+        @Test
+        void shouldReturnValidGrid() {
+            Grid grid = generator.generateGrid();
+            assertTrue(grid.isValid());
+        }
     }
 
     @Nested

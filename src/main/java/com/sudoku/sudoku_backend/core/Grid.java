@@ -142,17 +142,17 @@ public class Grid {
 
     private void validateCells(int[][] cells) {
         if (cells == null) {
-            throw new IllegalArgumentException("cells should not be null.");
+            throw new IllegalArgumentException("cells must not be null.");
         }
         if (cells.length != SudokuConstants.GRID_SIZE) {
-            throw new IllegalArgumentException(String.format("cells should contain %d rows.", SudokuConstants.GRID_SIZE));
+            throw new IllegalArgumentException(String.format("cells must contain %d rows.", SudokuConstants.GRID_SIZE));
         }
         for (int row = 0; row < cells.length; row++) {
             if (cells[row] == null) {
-                throw new IllegalArgumentException(String.format("Row %d should not be null.", row));
+                throw new IllegalArgumentException(String.format("Row %d must not be null.", row));
             }
             if (cells[row].length != SudokuConstants.GRID_SIZE) {
-                throw new IllegalArgumentException(String.format("Row %d should contain %d cells.", row, SudokuConstants.GRID_SIZE));
+                throw new IllegalArgumentException(String.format("Row %d must contain %d cells.", row, SudokuConstants.GRID_SIZE));
             }
             for (int col = 0; col < cells[row].length; col++) {
                 validateCell(cells[row][col]);

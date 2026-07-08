@@ -17,17 +17,17 @@ public class Solver {
     public Solver(Random random) { this.random = random; }
 
     public boolean solve(Grid grid) {
-        Objects.requireNonNull(grid, "grid should not be null.");
+        Objects.requireNonNull(grid, "grid must not be null.");
         grid.validate();
         return backtrack(grid);
     }
 
     public int countSolutions(Grid grid) {
-        Objects.requireNonNull(grid, "grid should not be null.");
+        Objects.requireNonNull(grid, "grid must not be null.");
         grid.validate();
-        Grid gridCopy = grid.copy();
+        Grid copy = grid.copy();
         Counter counter = new Counter();
-        enumerate(gridCopy, counter);
+        enumerate(copy, counter);
         return counter.count;
     }
 
@@ -36,14 +36,13 @@ public class Solver {
         Coordinate coordinate = findEmptyCell(grid);
         if (coordinate == null) return true;
         // Recursive step:
-        int rowIndex = coordinate.rowIndex();
-        int colIndex = coordinate.colIndex();
-        int[] shuffledCandidates = shuffledCandidates();
-        for (int candidate : shuffledCandidates) {
-            if (grid.isLegal(rowIndex, colIndex, candidate)) {
-                grid.setValue(rowIndex, colIndex, candidate);
+        int row = coordinate.row();
+        int col = coordinate.col();
+        for (int candidate : shuffledCandidates()) {
+            if (grid.isLegal(row, col, candidate)) {
+                grid.setValue(row, col, candidate);
                 if (backtrack(grid)) return true;
-                grid.clearValue(rowIndex, colIndex);
+                grid.clearValue(row, col);
             }
         }
         return false;
@@ -59,22 +58,22 @@ public class Solver {
             return;
         }
         // Recursive step:
-        int rowIndex = coordinate.rowIndex();
-        int colIndex = coordinate.colIndex();
+        int row = coordinate.row();
+        int col = coordinate.col();
         for (int candidate : candidates()) {
-            if (grid.isLegal(rowIndex, colIndex, candidate)) {
-                grid.setValue(rowIndex, colIndex, candidate);
+            if (grid.isLegal(row, col, candidate)) {
+                grid.setValue(row, col, candidate);
                 enumerate(grid, counter);
-                grid.clearValue(rowIndex, colIndex);
+                grid.clearValue(row, col);
             }
         }
     }
 
     private Coordinate findEmptyCell(Grid grid) {
-        for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
-            for (int j = 0; j < SudokuConstants.GRID_SIZE; j++) {
-                if (grid.getValue(i, j) == SudokuConstants.EMPTY_CELL) {
-                    return new Coordinate(i, j);
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
+                if (grid.getValue(row, col) == SudokuConstants.EMPTY_CELL) {
+                    return new Coordinate(row, col);
                 }
             }
         }
@@ -83,8 +82,8 @@ public class Solver {
 
     private int[] candidates() {
         int[] candidates = new int[SudokuConstants.GRID_SIZE];
-        for (int i = 0; i < candidates.length; i++) {
-            candidates[i] = i + 1;
+        for (int index = 0; index < candidates.length; index++) {
+            candidates[index] = index + 1;
         }
         return candidates;
     }

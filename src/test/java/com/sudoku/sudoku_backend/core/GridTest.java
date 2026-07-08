@@ -14,14 +14,14 @@ public class GridTest {
     private Grid grid;
 
     private static final int ROW = 0;
-    private static final int BELOW_MIN_ROW = -1;
-    private static final int ABOVE_MAX_ROW = 9;
+    private static final int ROW_BELOW_MIN = -1;
+    private static final int ROW_ABOVE_MAX = 9;
     private static final int COL = 0;
-    private static final int BELOW_MIN_COL = -1;
-    private static final int ABOVE_MAX_COL = 9;
+    private static final int COL_BELOW_MIN = -1;
+    private static final int COL_ABOVE_MAX = 9;
     private static final int VALUE = 1;
-    private static final int BELOW_MIN_VALUE = -1;
-    private static final int ABOVE_MAX_VALUE = 10;
+    private static final int VALUE_BELOW_MIN = -1;
+    private static final int VALUE_ABOVE_MAX = 10;
 
     private static int[][] createCells() {
         int[][] cells = new int[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
@@ -120,14 +120,14 @@ public class GridTest {
         @Test
         void shouldThrowWhenValueIsBelowMin() {
             int[][] cells = createCells();
-            cells[ROW][COL] = BELOW_MIN_VALUE;
+            cells[ROW][COL] = VALUE_BELOW_MIN;
             assertThrows(IllegalArgumentException.class, () -> new Grid(cells));
         }
 
         @Test
         void shouldThrowWhenValueIsAboveMax() {
             int[][] cells = createCells();
-            cells[ROW][COL] = ABOVE_MAX_VALUE;
+            cells[ROW][COL] = VALUE_ABOVE_MAX;
             assertThrows(IllegalArgumentException.class, () -> new Grid(cells));
         }
     }
@@ -149,12 +149,12 @@ public class GridTest {
 
         @Test
         void shouldThrowWhenRowIsBelowMin() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getRow(BELOW_MIN_ROW));
+            assertThrows(IllegalArgumentException.class, () -> grid.getRow(ROW_BELOW_MIN));
         }
 
         @Test
         void shouldThrowWhenRowIsAboveMax() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getRow(ABOVE_MAX_ROW));
+            assertThrows(IllegalArgumentException.class, () -> grid.getRow(ROW_ABOVE_MAX));
         }
 
         @Test
@@ -182,12 +182,12 @@ public class GridTest {
 
         @Test
         void shouldThrowWhenColIsBelowMin() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getCol(BELOW_MIN_COL));
+            assertThrows(IllegalArgumentException.class, () -> grid.getCol(COL_BELOW_MIN));
         }
 
         @Test
         void shouldThrowWhenColIsAboveMax() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getCol(ABOVE_MAX_COL));
+            assertThrows(IllegalArgumentException.class, () -> grid.getCol(COL_ABOVE_MAX));
         }
 
         @Test
@@ -217,22 +217,22 @@ public class GridTest {
 
         @Test
         void shouldThrowWhenRowIsBelowMin() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getBox(BELOW_MIN_ROW, COL));
+            assertThrows(IllegalArgumentException.class, () -> grid.getBox(ROW_BELOW_MIN, COL));
         }
 
         @Test
         void shouldThrowWhenRowIsAboveMax() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getBox(ABOVE_MAX_ROW, COL));
+            assertThrows(IllegalArgumentException.class, () -> grid.getBox(ROW_ABOVE_MAX, COL));
         }
 
         @Test
         void shouldThrowWhenColIsBelowMin() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getBox(ROW, BELOW_MIN_COL));
+            assertThrows(IllegalArgumentException.class, () -> grid.getBox(ROW, COL_BELOW_MIN));
         }
 
         @Test
         void shouldThrowWhenColIsAboveMax() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getBox(ROW, ABOVE_MAX_COL));
+            assertThrows(IllegalArgumentException.class, () -> grid.getBox(ROW, COL_ABOVE_MAX));
         }
 
         @Test
@@ -286,22 +286,22 @@ public class GridTest {
 
         @Test
         void shouldThrowWhenRowIsBelowMin() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getValue(BELOW_MIN_ROW, COL));
+            assertThrows(IllegalArgumentException.class, () -> grid.getValue(ROW_BELOW_MIN, COL));
         }
 
         @Test
         void shouldThrowWhenRowIsAboveMax() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getValue(ABOVE_MAX_ROW, COL));
+            assertThrows(IllegalArgumentException.class, () -> grid.getValue(ROW_ABOVE_MAX, COL));
         }
 
         @Test
         void shouldThrowWhenColIsBelowMin() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getValue(ROW, BELOW_MIN_COL));
+            assertThrows(IllegalArgumentException.class, () -> grid.getValue(ROW, COL_BELOW_MIN));
         }
 
         @Test
         void shouldThrowWhenColIsAboveMax() {
-            assertThrows(IllegalArgumentException.class, () -> grid.getValue(ROW, ABOVE_MAX_COL));
+            assertThrows(IllegalArgumentException.class, () -> grid.getValue(ROW, COL_ABOVE_MAX));
         }
     }
 
@@ -321,32 +321,32 @@ public class GridTest {
 
         @Test
         void shouldThrowWhenRowIsBelowMin() {
-            assertThrows(IllegalArgumentException.class, () -> grid.setValue(BELOW_MIN_ROW, COL, VALUE));
+            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW_BELOW_MIN, COL, VALUE));
         }
 
         @Test
         void shouldThrowWhenRowIsAboveMax() {
-            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ABOVE_MAX_ROW, COL, VALUE));
+            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW_ABOVE_MAX, COL, VALUE));
         }
 
         @Test
         void shouldThrowWhenColIsBelowMin() {
-            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW, BELOW_MIN_COL, VALUE));
+            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW, COL_BELOW_MIN, VALUE));
         }
 
         @Test
         void shouldThrowWhenColIsAboveMax() {
-            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW, ABOVE_MAX_COL, VALUE));
+            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW, COL_ABOVE_MAX, VALUE));
         }
 
         @Test
         void shouldThrowWhenValueIsBelowMin() {
-            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW, COL, BELOW_MIN_VALUE));
+            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW, COL, VALUE_BELOW_MIN));
         }
 
         @Test
         void shouldThrowWhenValueIsAboveMax() {
-            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW, COL, ABOVE_MAX_VALUE));
+            assertThrows(IllegalArgumentException.class, () -> grid.setValue(ROW, COL, VALUE_ABOVE_MAX));
         }
     }
 
@@ -366,22 +366,22 @@ public class GridTest {
 
         @Test
         void shouldThrowWhenRowIsBelowMin() {
-            assertThrows(IllegalArgumentException.class, () -> grid.clearValue(BELOW_MIN_ROW, COL));
+            assertThrows(IllegalArgumentException.class, () -> grid.clearValue(ROW_BELOW_MIN, COL));
         }
 
         @Test
         void shouldThrowWhenRowIsAboveMax() {
-            assertThrows(IllegalArgumentException.class, () -> grid.clearValue(ABOVE_MAX_ROW, COL));
+            assertThrows(IllegalArgumentException.class, () -> grid.clearValue(ROW_ABOVE_MAX, COL));
         }
 
         @Test
         void shouldThrowWhenColIsBelowMin() {
-            assertThrows(IllegalArgumentException.class, () -> grid.clearValue(ROW, BELOW_MIN_COL));
+            assertThrows(IllegalArgumentException.class, () -> grid.clearValue(ROW, COL_BELOW_MIN));
         }
 
         @Test
         void shouldThrowWhenColIsAboveMax() {
-            assertThrows(IllegalArgumentException.class, () -> grid.clearValue(ROW, ABOVE_MAX_COL));
+            assertThrows(IllegalArgumentException.class, () -> grid.clearValue(ROW, COL_ABOVE_MAX));
         }
     }
 
@@ -424,32 +424,32 @@ public class GridTest {
 
         @Test
         void shouldThrowWhenRowIsBelowMin() {
-            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(BELOW_MIN_ROW, COL, VALUE));
+            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ROW_BELOW_MIN, COL, VALUE));
         }
 
         @Test
         void shouldThrowWhenRowIsAboveMax() {
-            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ABOVE_MAX_ROW, COL, VALUE));
+            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ROW_ABOVE_MAX, COL, VALUE));
         }
 
         @Test
         void shouldThrowWhenColIsBelowMin() {
-            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ROW, BELOW_MIN_COL, VALUE));
+            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ROW, COL_BELOW_MIN, VALUE));
         }
 
         @Test
         void shouldThrowWhenColIsAboveMax() {
-            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ROW, ABOVE_MAX_COL, VALUE));
+            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ROW, COL_ABOVE_MAX, VALUE));
         }
 
         @Test
         void shouldThrowWhenValueIsBelowMin() {
-            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ROW, COL, BELOW_MIN_VALUE));
+            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ROW, COL, VALUE_BELOW_MIN));
         }
 
         @Test
         void shouldThrowWhenValueIsAboveMax() {
-            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ROW, COL, ABOVE_MAX_VALUE));
+            assertThrows(IllegalArgumentException.class, () -> grid.isLegal(ROW, COL, VALUE_ABOVE_MAX));
         }
     }
 

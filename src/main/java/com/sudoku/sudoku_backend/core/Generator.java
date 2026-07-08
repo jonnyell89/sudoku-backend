@@ -22,39 +22,38 @@ public class Generator {
     }
 
     public Puzzle createPuzzle(Grid grid, int target) {
-        Objects.requireNonNull(grid, "grid should not be null.");
+        Objects.requireNonNull(grid, "grid must not be null.");
         grid.validate();
         if (target < 45 || target > 57) {
             throw new IllegalArgumentException("Target must be between 45 and 57.");
         }
 
-        Grid workingGrid = grid.copy();
-        Coordinate[] coordinates = shuffledCoordinates();
+        Grid copy = grid.copy();
 
         int removals = 0;
-        for (Coordinate coordinate : coordinates) {
-            int rowIndex = coordinate.rowIndex();
-            int colIndex = coordinate.colIndex();
-            int value = workingGrid.getValue(rowIndex, colIndex);
+        for (Coordinate coordinate : shuffledCoordinates()) {
+            int row = coordinate.row();
+            int col = coordinate.col();
+            int value = copy.getValue(row, col);
 
-            workingGrid.clearValue(rowIndex, colIndex);
+            copy.clearValue(row, col);
 
-            if (solver.countSolutions(workingGrid) == 1) {
+            if (solver.countSolutions(copy) == 1) {
                 removals++;
                 if (removals >= target) break;
             } else {
-                workingGrid.setValue(rowIndex, colIndex, value);
+                copy.setValue(row, col, value);
             }
         }
-        return new Puzzle(grid, workingGrid);
+        return new Puzzle(grid, copy);
     }
 
     private Coordinate[] coordinates() {
         Coordinate[] coordinates = new Coordinate[SudokuConstants.GRID_CELLS];
         int index = 0;
-        for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
-            for (int j = 0; j < SudokuConstants.GRID_SIZE; j++) {
-                coordinates[index++] = new Coordinate(i, j);
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
+                coordinates[index++] = new Coordinate(row, col);
             }
         }
         return coordinates;

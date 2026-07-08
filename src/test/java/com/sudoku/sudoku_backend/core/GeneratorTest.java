@@ -17,8 +17,8 @@ public class GeneratorTest {
     private static final int TARGET = 50;
     private static final int MIN_TARGET = 45;
     private static final int MAX_TARGET = 57;
-    private static final int BELOW_MIN_TARGET = MIN_TARGET - 1;
-    private static final int ABOVE_MAX_TARGET = MAX_TARGET + 1;
+    private static final int TARGET_BELOW_MIN = MIN_TARGET - 1;
+    private static final int TARGET_ABOVE_MAX = MAX_TARGET + 1;
 
     static IntStream seeds() {
         return IntStream.range(0, SEED_COUNT);
@@ -59,10 +59,10 @@ public class GeneratorTest {
             Generator actualGenerator = new Generator(actualRandom);
             Grid expectedGrid = expectedGenerator.generateGrid();
             Grid actualGrid = actualGenerator.generateGrid();
-            for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
-                for (int j = 0; j < SudokuConstants.GRID_SIZE; j++) {
-                    int expectedCell = expectedGrid.getValue(i, j);
-                    int actualCell = actualGrid.getValue(i, j);
+            for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
+                for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
+                    int expectedCell = expectedGrid.getValue(row, col);
+                    int actualCell = actualGrid.getValue(row, col);
                     assertEquals(expectedCell, actualCell);
                 }
             }
@@ -104,14 +104,14 @@ public class GeneratorTest {
             Generator generator = new Generator(seededRandom);
 
             Grid grid = generator.generateGrid();
-            Grid gridCopy = grid.copy();
+            Grid copy = grid.copy();
             generator.createPuzzle(grid, TARGET);
-            assertEquals(gridCopy, grid, String.format("Test failed for seed %d.", seed));
+            assertEquals(copy, grid, String.format("Test failed for seed %d.", seed));
         }
 
         @ParameterizedTest
         @MethodSource("com.sudoku.sudoku_backend.core.GeneratorTest#seeds")
-        void shouldPreservePreFilledCellsFromCompleteGrid(int seed) {
+        void shouldPreserveValuesFromCompleteGrid(int seed) {
             Random seededRandom = new Random(seed);
             Generator generator = new Generator(seededRandom);
 
@@ -120,11 +120,11 @@ public class GeneratorTest {
             Grid carved = puzzle.carved();
             Grid complete = puzzle.complete();
 
-            for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
-                for (int j = 0; j < SudokuConstants.GRID_SIZE; j++) {
-                    int cell = carved.getValue(i, j);
+            for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
+                for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
+                    int cell = carved.getValue(row, col);
                     if (cell != SudokuConstants.EMPTY_CELL) {
-                        assertEquals(complete.getValue(i, j), cell);
+                        assertEquals(complete.getValue(row, col), cell);
                     }
                 }
             }
@@ -151,9 +151,9 @@ public class GeneratorTest {
             Puzzle puzzle = generator.createPuzzle(grid, target);
             Grid carved = puzzle.carved();
             int emptyCells = 0;
-            for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
-                for (int j = 0; j < SudokuConstants.GRID_SIZE; j++) {
-                    int cell = carved.getValue(i, j);
+            for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
+                for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
+                    int cell = carved.getValue(row, col);
                     if (cell == SudokuConstants.EMPTY_CELL) {
                         emptyCells++;
                     }
@@ -163,7 +163,7 @@ public class GeneratorTest {
         }
 
         @Test
-        void shouldCreateTheSamePuzzleWhenUsingTheSameSeed() {
+        void shouldCreateIdenticalPuzzlesWithIdenticalSeeds() {
             Random expectedRandom = new Random(24L);
             Random actualRandom = new Random(24L);
             Generator expectedGenerator = new Generator(expectedRandom);
@@ -178,31 +178,31 @@ public class GeneratorTest {
             Grid expectedCarvedGrid = expectedPuzzle.carved();
             Grid actualCarvedGrid = actualPuzzle.carved();
 
-            for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
-                for (int j = 0; j < SudokuConstants.GRID_SIZE; j++) {
-                    int expectedCell = expectedCarvedGrid.getValue(i, j);
-                    int actualCell = actualCarvedGrid.getValue(i, j);
+            for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
+                for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
+                    int expectedCell = expectedCarvedGrid.getValue(row, col);
+                    int actualCell = actualCarvedGrid.getValue(row, col);
                     assertEquals(expectedCell, actualCell);
                 }
             }
         }
 
         @Test
-        void shouldThrowWhenTargetIsBelowLowerBound() {
+        void shouldThrowWhenTargetIsBelowMin() {
             Random random = new Random();
             Generator generator = new Generator(random);
 
             Grid grid = generator.generateGrid();
-            assertThrows(IllegalArgumentException.class, () -> generator.createPuzzle(grid, BELOW_MIN_TARGET));
+            assertThrows(IllegalArgumentException.class, () -> generator.createPuzzle(grid, TARGET_BELOW_MIN));
         }
 
         @Test
-        void shouldThrowWhenTargetIsAboveUpperBound() {
+        void shouldThrowWhenTargetIsAboveMax() {
             Random random = new Random();
             Generator generator = new Generator(random);
 
             Grid grid = generator.generateGrid();
-            assertThrows(IllegalArgumentException.class, () -> generator.createPuzzle(grid, ABOVE_MAX_TARGET));
+            assertThrows(IllegalArgumentException.class, () -> generator.createPuzzle(grid, TARGET_ABOVE_MAX));
         }
     }
 }

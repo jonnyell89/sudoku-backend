@@ -23,15 +23,15 @@ public class SolverTest {
         solver = new Solver(random);
     }
 
-    static Stream<int[][]> solvableGrids() {
+    static Stream<int[][]> testGrids() {
         return Stream.of(easy, medium, hard, expert, master, extreme);
     }
 
-    private static void assertPreFilledValuesPreserved(Grid grid, int[][] source) {
-        for (int i = 0; i < source.length; i++) {
-            for (int j = 0; j < source[i].length; j++) {
-                if (source[i][j] != 0) {
-                    assertEquals(source[i][j], grid.getValue(i, j));
+    private static void assertValuesPreserved(Grid grid, int[][] source) {
+        for (int row = 0; row < source.length; row++) {
+            for (int col = 0; col < source[row].length; col++) {
+                if (source[row][col] != 0) {
+                    assertEquals(source[row][col], grid.getValue(row, col));
                 }
             }
         }
@@ -47,8 +47,8 @@ public class SolverTest {
         }
 
         @ParameterizedTest
-        @MethodSource("com.sudoku.sudoku_backend.core.SolverTest#solvableGrids")
-        void shouldSolveGrid(int[][] data) {
+        @MethodSource("com.sudoku.sudoku_backend.core.SolverTest#testGrids")
+        void shouldSolveTestGrid(int[][] data) {
             Grid grid = new Grid(data);
             assertTrue(solver.solve(grid));
         }
@@ -71,11 +71,11 @@ public class SolverTest {
         }
 
         @ParameterizedTest
-        @MethodSource("com.sudoku.sudoku_backend.core.SolverTest#solvableGrids")
-        void shouldPreservePreFilledValuesWhenSolvingPartiallyFilledGrid(int[][] data) {
+        @MethodSource("com.sudoku.sudoku_backend.core.SolverTest#testGrids")
+        void shouldPreserveValuesWhenSolvingTestGrid(int[][] data) {
             Grid grid = new Grid(data);
             solver.solve(grid);
-            assertPreFilledValuesPreserved(grid, data);
+            assertValuesPreserved(grid, data);
         }
     }
 
@@ -89,7 +89,7 @@ public class SolverTest {
         }
 
         @ParameterizedTest
-        @MethodSource("com.sudoku.sudoku_backend.core.SolverTest#solvableGrids")
+        @MethodSource("com.sudoku.sudoku_backend.core.SolverTest#testGrids")
         void shouldReturnOneUniqueSolution(int[][] data) {
             Grid grid = new Grid(data);
             assertEquals(1, solver.countSolutions(grid));
@@ -113,11 +113,11 @@ public class SolverTest {
         }
 
         @ParameterizedTest
-        @MethodSource("com.sudoku.sudoku_backend.core.SolverTest#solvableGrids")
+        @MethodSource("com.sudoku.sudoku_backend.core.SolverTest#testGrids")
         void shouldNotMutateOriginalGrid(int[][] data) {
             Grid grid = new Grid(data);
             solver.countSolutions(grid);
-            assertPreFilledValuesPreserved(grid, data);
+            assertValuesPreserved(grid, data);
         }
     }
 }

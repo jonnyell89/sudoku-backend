@@ -10,7 +10,8 @@ public class Cell {
     private int guess;
 
     public Cell(int row, int col, boolean given) {
-
+        Validator.validateIndex("row", row);
+        Validator.validateIndex("col", col);
         this.row = row;
         this.col = col;
         this.given = given;
@@ -34,6 +35,14 @@ public class Cell {
     }
 
     public void setGuess(int guess) {
+        Validator.validateValue(guess);
+        if (given) {
+            throw new IllegalStateException("given cells cannot be modified.");
+        }
         this.guess = guess;
+    }
+
+    public boolean isEmpty() {
+        return guess == SudokuConstants.EMPTY_CELL;
     }
 }

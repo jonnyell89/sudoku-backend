@@ -25,12 +25,12 @@ public class Grid {
     }
 
     public int[] getRow(int row) {
-        validateRow(row);
+        Validator.validateIndex("row", row);
         return Arrays.copyOf(this.cells[row], this.cells[row].length);
     }
 
     public int[] getCol(int col) {
-        validateCol(col);
+        Validator.validateIndex("col", col);
         int[] copy = new int[this.cells.length];
         for (int row = 0; row < copy.length; row++) {
             copy[row] = this.cells[row][col];
@@ -39,7 +39,8 @@ public class Grid {
     }
 
     public int[] getBox(int row, int col) {
-        validateIndices(row, col);
+        Validator.validateIndex("row", row);
+        Validator.validateIndex("col", col);
         int[] box = new int[SudokuConstants.BOX_SIZE * SudokuConstants.BOX_SIZE];
         int startRow = Math.floorDiv(row, SudokuConstants.BOX_SIZE) * SudokuConstants.BOX_SIZE;
         int startCol = Math.floorDiv(col, SudokuConstants.BOX_SIZE) * SudokuConstants.BOX_SIZE;
@@ -53,24 +54,28 @@ public class Grid {
     }
 
     public int getValue(int row, int col) {
-        validateIndices(row, col);
+        Validator.validateIndex("row", row);
+        Validator.validateIndex("col", col);
         return this.cells[row][col];
     }
 
     public void setValue(int row, int col, int value) {
-        validateIndices(row, col);
-        validateCell(value);
+        Validator.validateIndex("row", row);
+        Validator.validateIndex("col", col);
+        Validator.validateValue(value);
         this.cells[row][col] = value;
     }
 
     public void clearValue(int row, int col) {
-        validateIndices(row, col);
+        Validator.validateIndex("row", row);
+        Validator.validateIndex("col", col);
         this.cells[row][col] = SudokuConstants.EMPTY_CELL;
     }
 
     public boolean isLegal(int row, int col, int value) {
-        validateIndices(row, col);
-        validateCell(value);
+        Validator.validateIndex("row", row);
+        Validator.validateIndex("col", col);
+        Validator.validateValue(value);
         for (int cell : getRow(row)) {
             if (cell == value) return false;
         }
@@ -107,14 +112,14 @@ public class Grid {
         return true;
     }
 
-    public Grid copy() {
-        return new Grid(this.cells);
-    }
-
     public void validate() {
         if (!isValid()) {
             throw new IllegalArgumentException("grid must not contain duplicate values in any row, col, or box.");
         }
+    }
+
+    public Grid copy() {
+        return new Grid(this.cells);
     }
 
     @Override
@@ -155,31 +160,8 @@ public class Grid {
                 throw new IllegalArgumentException(String.format("Row %d must contain %d cells.", row, SudokuConstants.GRID_SIZE));
             }
             for (int col = 0; col < cells[row].length; col++) {
-                validateCell(cells[row][col]);
+                Validator.validateValue(cells[row][col]);
             }
         }
-    }
-
-    private void validateCell(int cell) {
-        if (cell < SudokuConstants.EMPTY_CELL || cell > SudokuConstants.MAX_VALUE) {
-            throw new IllegalArgumentException(String.format("cell must be between %d and %d.", SudokuConstants.EMPTY_CELL, SudokuConstants.MAX_VALUE));
-        }
-    }
-
-    private void validateRow(int row) {
-        if (row < SudokuConstants.MIN_INDEX || row > SudokuConstants.MAX_INDEX) {
-            throw new IllegalArgumentException(String.format("row must be between %d and %d.", SudokuConstants.MIN_INDEX, SudokuConstants.MAX_INDEX));
-        }
-    }
-
-    private void validateCol(int col) {
-        if (col < SudokuConstants.MIN_INDEX || col > SudokuConstants.MAX_INDEX) {
-            throw new IllegalArgumentException(String.format("col must be between %d and %d.", SudokuConstants.MIN_INDEX, SudokuConstants.MAX_INDEX));
-        }
-    }
-
-    private void validateIndices(int row, int col) {
-        validateRow(row);
-        validateCol(col);
     }
 }

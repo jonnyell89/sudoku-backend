@@ -1,6 +1,7 @@
-package com.sudoku.sudoku_backend.core;
+package com.sudoku.sudoku_backend.model;
 
 import com.sudoku.sudoku_backend.SudokuConstants;
+import com.sudoku.sudoku_backend.core.Validator;
 
 public class Cell {
 
@@ -35,14 +36,18 @@ public class Cell {
     }
 
     public void setGuess(int guess) {
-        Validator.validateValue(guess);
         if (given) {
             throw new IllegalStateException("given cells cannot be modified.");
         }
+        Validator.validateValue(guess);
         this.guess = guess;
     }
 
     public boolean isEmpty() {
         return guess == SudokuConstants.EMPTY_CELL;
+    }
+
+    public boolean isEditable() {
+        return !given;
     }
 }

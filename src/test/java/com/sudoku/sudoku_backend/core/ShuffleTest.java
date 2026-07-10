@@ -77,4 +77,57 @@ public class ShuffleTest {
             assertArrayEquals(expectedArray, actualArray);
         }
     }
+
+    @Nested
+    class FisherYatesGenericArrayTests {
+
+        @Test
+        void shouldNotMutateEmptyArray() {
+            Random random = new Random();
+            Integer[] array = new Integer[0];
+            Integer[] copy = Arrays.copyOf(array, array.length);
+            Shuffle.fisherYates(array, random);
+            assertArrayEquals(copy, array);
+        }
+
+        @Test
+        void shouldNotMutateSingleElementArray() {
+            Random random = new Random();
+            Integer[] array = new Integer[]{1};
+            Integer[] copy = Arrays.copyOf(array, array.length);
+            Shuffle.fisherYates(array, random);
+            assertArrayEquals(copy, array);
+        }
+
+        @ParameterizedTest
+        @MethodSource("com.sudoku.sudoku_backend.core.ShuffleTest#seeds")
+        void shouldShuffleArrayInPlace(int seed) {
+            Random seededRandom = new Random(seed);
+            Integer[] array = new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
+            Integer[] copy = Arrays.copyOf(array, array.length);
+            Shuffle.fisherYates(array, seededRandom);
+            assertFalse(Arrays.equals(copy, array));
+        }
+
+        @ParameterizedTest
+        @MethodSource("com.sudoku.sudoku_backend.core.ShuffleTest#seeds")
+        void shouldMaintainArrayElements(int seed) {
+            Random seededRandom = new Random(seed);
+            Integer[] array = new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
+            Shuffle.fisherYates(array, seededRandom);
+            Set<Integer> seen = new HashSet<>(Arrays.asList(array));
+            assertEquals(seen.size(), array.length);
+        }
+
+        @Test
+        void shouldCreateIdenticalShuffleWhenUsingIdenticalSeeds() {
+            Random expectedRandom = new Random(SEED);
+            Random actualRandom = new Random(SEED);
+            Integer[] expectedArray = new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
+            Integer[] actualArray = Arrays.copyOf(expectedArray, expectedArray.length);
+            Shuffle.fisherYates(expectedArray, expectedRandom);
+            Shuffle.fisherYates(actualArray, actualRandom);
+            assertArrayEquals(expectedArray, actualArray);
+        }
+    }
 }

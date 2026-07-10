@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GeneratorTest {
 
+    private static final int SEED = 24;
     private static final int SEED_COUNT = 24;
     private static final int TARGET = 50;
     private static final int MIN_TARGET = 45;
@@ -52,9 +53,9 @@ public class GeneratorTest {
         }
 
         @Test
-        void shouldCreateTheSameGridWhenUsingTheSameSeed() {
-            Random expectedRandom = new Random(24L);
-            Random actualRandom = new Random(24L);
+        void shouldCreateIdenticalGridsWhenUsingIdenticalSeeds() {
+            Random expectedRandom = new Random(SEED);
+            Random actualRandom = new Random(SEED);
             Generator expectedGenerator = new Generator(expectedRandom);
             Generator actualGenerator = new Generator(actualRandom);
             Grid expectedGrid = expectedGenerator.generateGrid();
@@ -163,9 +164,9 @@ public class GeneratorTest {
         }
 
         @Test
-        void shouldCreateIdenticalPuzzlesWithIdenticalSeeds() {
-            Random expectedRandom = new Random(24L);
-            Random actualRandom = new Random(24L);
+        void shouldCreateIdenticalPuzzlesWhenUsingIdenticalSeeds() {
+            Random expectedRandom = new Random(SEED);
+            Random actualRandom = new Random(SEED);
             Generator expectedGenerator = new Generator(expectedRandom);
             Generator actualGenerator = new Generator(actualRandom);
 

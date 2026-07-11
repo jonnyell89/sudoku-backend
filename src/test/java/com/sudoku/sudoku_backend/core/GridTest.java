@@ -8,20 +8,11 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static com.sudoku.sudoku_backend.SudokuTestConstants.*;
 
 public class GridTest {
 
     private Grid grid;
-
-    private static final int ROW = 0;
-    private static final int ROW_BELOW_MIN = -1;
-    private static final int ROW_ABOVE_MAX = 9;
-    private static final int COL = 0;
-    private static final int COL_BELOW_MIN = -1;
-    private static final int COL_ABOVE_MAX = 9;
-    private static final int VALUE = 1;
-    private static final int VALUE_BELOW_MIN = -1;
-    private static final int VALUE_ABOVE_MAX = 10;
 
     private static int[][] createCells() {
         int[][] cells = new int[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];

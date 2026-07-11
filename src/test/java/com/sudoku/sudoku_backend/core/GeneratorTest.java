@@ -10,16 +10,9 @@ import java.util.Random;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static com.sudoku.sudoku_backend.SudokuTestConstants.*;
 
 public class GeneratorTest {
-
-    private static final int SEED = 24;
-    private static final int SEED_COUNT = 24;
-    private static final int TARGET = 50;
-    private static final int MIN_TARGET = 45;
-    private static final int MAX_TARGET = 57;
-    private static final int TARGET_BELOW_MIN = MIN_TARGET - 1;
-    private static final int TARGET_ABOVE_MAX = MAX_TARGET + 1;
 
     static IntStream seeds() {
         return IntStream.range(0, SEED_COUNT);

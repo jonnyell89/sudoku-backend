@@ -12,11 +12,9 @@ import java.util.Set;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static com.sudoku.sudoku_backend.SudokuTestConstants.*;
 
 public class ShuffleTest {
-
-    private static final int SEED = 24;
-    private static final int SEED_COUNT = 24;
 
     static IntStream seeds() {
         return IntStream.range(0, SEED_COUNT);

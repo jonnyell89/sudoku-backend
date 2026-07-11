@@ -48,6 +48,13 @@ public class Cell {
         this.value = value;
     }
 
+    public void clearValue() {
+        if (given) {
+            throw new IllegalStateException("given cells cannot be modified.");
+        }
+        this.value = SudokuConstants.EMPTY_CELL;
+    }
+
     public boolean isGiven() {
         return given;
     }

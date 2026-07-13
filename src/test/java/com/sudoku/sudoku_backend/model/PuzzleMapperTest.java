@@ -27,10 +27,10 @@ public class PuzzleMapperTest {
         Grid grid = generator.generateGrid();
         Puzzle puzzle = generator.createPuzzle(grid, TARGET);
         Grid carved = puzzle.carved();
-        Cell[][] cells = PuzzleMapper.map(puzzle);
+        CellGrid cells = PuzzleMapper.map(puzzle);
         for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
             for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
-                Cell cell = cells[row][col];
+                Cell cell = cells.getCell(row, col);
                 assertEquals(row, cell.getRow());
                 assertEquals(col, cell.getCol());
                 assertEquals(carved.getValue(row, col), cell.getValue());

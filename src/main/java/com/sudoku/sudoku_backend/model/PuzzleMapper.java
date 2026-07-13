@@ -6,7 +6,7 @@ import com.sudoku.sudoku_backend.core.Puzzle;
 
 public class PuzzleMapper {
 
-    public static Cell[][] map(Puzzle puzzle) {
+    public static CellGrid map(Puzzle puzzle) {
         Cell[][] cells = new Cell[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
         Grid carved = puzzle.carved();
         for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
@@ -18,6 +18,6 @@ public class PuzzleMapper {
                 cells[row][col] = cell;
             }
         }
-        return cells;
+        return new CellGrid(cells);
     }
 }

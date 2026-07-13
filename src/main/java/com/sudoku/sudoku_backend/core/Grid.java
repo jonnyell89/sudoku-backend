@@ -16,7 +16,7 @@ public class Grid {
     }
 
     public Grid(int[][] cells) {
-        validateCells(cells);
+        Validator.validateCells(cells);
         int[][] copy = new int[cells.length][];
         for (int row = 0; row < cells.length; row++) {
             copy[row] = Arrays.copyOf(cells[row], cells[row].length);
@@ -143,25 +143,5 @@ public class Grid {
             }
         }
         return false;
-    }
-
-    private void validateCells(int[][] cells) {
-        if (cells == null) {
-            throw new IllegalArgumentException("cells must not be null.");
-        }
-        if (cells.length != SudokuConstants.GRID_SIZE) {
-            throw new IllegalArgumentException(String.format("cells must contain %d rows.", SudokuConstants.GRID_SIZE));
-        }
-        for (int row = 0; row < cells.length; row++) {
-            if (cells[row] == null) {
-                throw new IllegalArgumentException(String.format("Row %d must not be null.", row));
-            }
-            if (cells[row].length != SudokuConstants.GRID_SIZE) {
-                throw new IllegalArgumentException(String.format("Row %d must contain %d cells.", row, SudokuConstants.GRID_SIZE));
-            }
-            for (int col = 0; col < cells[row].length; col++) {
-                Validator.validateValue(cells[row][col]);
-            }
-        }
     }
 }

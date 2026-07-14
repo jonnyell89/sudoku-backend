@@ -16,9 +16,9 @@ public class PuzzleService {
         this.generator = generator;
     }
 
-    public CellGrid newPuzzle(int difficulty) {
+    public CellGrid newPuzzle(Difficulty difficulty) {
         Grid grid = generator.generateGrid();
-        Puzzle puzzle = generator.createPuzzle(grid, difficulty);
+        Puzzle puzzle = generator.createPuzzle(grid, difficulty.getTarget());
         return PuzzleMapper.map(puzzle);
     }
 }

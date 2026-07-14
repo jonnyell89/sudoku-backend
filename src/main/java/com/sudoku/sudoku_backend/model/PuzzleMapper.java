@@ -7,6 +7,9 @@ import com.sudoku.sudoku_backend.core.Puzzle;
 public class PuzzleMapper {
 
     public static CellGrid map(Puzzle puzzle) {
+        if (puzzle == null) {
+            throw new IllegalArgumentException("puzzle must not be null.");
+        }
         Cell[][] cells = new Cell[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
         Grid carved = puzzle.carved();
         for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {

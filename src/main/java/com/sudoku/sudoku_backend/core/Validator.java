@@ -52,6 +52,9 @@ public class Validator {
                 throw new IllegalArgumentException(String.format("Row %d must contain %d cells.", row, SudokuConstants.GRID_SIZE));
             }
             for (int col = 0; col < cells[row].length; col++) {
+                if (cells[row][col] == null) {
+                    throw new IllegalArgumentException(String.format("cells[%d][%d] must not be null.", row, col));
+                }
                 Validator.validateValue(cells[row][col].getValue());
             }
         }

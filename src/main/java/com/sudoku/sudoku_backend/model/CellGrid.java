@@ -12,6 +12,8 @@ public class CellGrid {
     }
 
     public Cell getCell(int row, int col) {
+        Validator.validateIndex("row", row);
+        Validator.validateIndex("col", col);
         return cells[row][col];
     }
 }

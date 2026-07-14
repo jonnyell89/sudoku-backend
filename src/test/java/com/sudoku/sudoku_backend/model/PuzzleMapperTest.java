@@ -4,6 +4,7 @@ import com.sudoku.sudoku_backend.SudokuConstants;
 import com.sudoku.sudoku_backend.core.Generator;
 import com.sudoku.sudoku_backend.core.Grid;
 import com.sudoku.sudoku_backend.core.Puzzle;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -21,7 +22,7 @@ public class PuzzleMapperTest {
 
     @ParameterizedTest
     @MethodSource("seeds")
-    void shouldMapCarvedPuzzleToTwoDimensionalArrayOfCells(int seed) {
+    void shouldMapCarvedPuzzleToCellGrid(int seed) {
         Random seededRandom = new Random(seed);
         Generator generator = new Generator(seededRandom);
         Grid grid = generator.generateGrid();
@@ -33,11 +34,17 @@ public class PuzzleMapperTest {
                 Cell cell = cells.getCell(row, col);
                 assertEquals(row, cell.getRow());
                 assertEquals(col, cell.getCol());
-                assertEquals(carved.getValue(row, col), cell.getValue());
-                boolean isGiven = carved.getValue(row, col) != 0;
+                int expectedValue = carved.getValue(row, col);
+                assertEquals(expectedValue, cell.getValue());
+                boolean isGiven = expectedValue != 0;
                 assertEquals(isGiven, cell.isGiven());
                 assertEquals(!isGiven, cell.isEditable());
             }
         }
+    }
+
+    @Test
+    void shouldThrowWhenPuzzleIsNull() {
+        assertThrows(IllegalArgumentException.class, () -> PuzzleMapper.map(null));
     }
 }

@@ -12,4 +12,5 @@ public final class SudokuConstants {
     public static final int MAX_INDEX = GRID_SIZE - 1;
     public static final int MIN_VALUE = 1;
     public static final int MAX_VALUE = GRID_SIZE;
+    public static final int TARGET = 50;
 }

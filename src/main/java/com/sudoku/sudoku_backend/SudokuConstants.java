@@ -13,4 +13,6 @@ public final class SudokuConstants {
     public static final int MIN_VALUE = 1;
     public static final int MAX_VALUE = GRID_SIZE;
     public static final int TARGET = 50;
+    public static final int MIN_TARGET = 45;
+    public static final int MAX_TARGET = 57;
 }

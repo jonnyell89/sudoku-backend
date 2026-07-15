@@ -24,8 +24,8 @@ public class Generator {
     public Puzzle createPuzzle(Grid grid, int target) {
         Objects.requireNonNull(grid, "grid must not be null.");
         grid.validate();
-        if (target < 45 || target > 57) {
-            throw new IllegalArgumentException("Target must be between 45 and 57.");
+        if (target < SudokuConstants.MIN_TARGET || target > SudokuConstants.MAX_TARGET) {
+            throw new IllegalArgumentException(String.format("Target must be between %d and %d.", SudokuConstants.MIN_TARGET, SudokuConstants.MAX_TARGET));
         }
 
         Grid copy = grid.copy();

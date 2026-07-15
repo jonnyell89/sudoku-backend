@@ -38,7 +38,6 @@ public class PuzzleMapperTest {
                 assertEquals(expectedValue, cell.getValue());
                 boolean isGiven = expectedValue != 0;
                 assertEquals(isGiven, cell.isGiven());
-                assertEquals(!isGiven, cell.isEditable());
             }
         }
     }

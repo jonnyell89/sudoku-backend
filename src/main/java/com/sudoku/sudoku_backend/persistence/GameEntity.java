@@ -19,7 +19,7 @@ public class GameEntity {
     @Column(nullable = false, length = 81)
     private String current;
 
-    protected  GameEntity() {}
+    protected  GameEntity() {} // protected no-arg constructor JPA requirement
 
     public GameEntity(String complete, String carved, String current) {
         this.complete = complete;

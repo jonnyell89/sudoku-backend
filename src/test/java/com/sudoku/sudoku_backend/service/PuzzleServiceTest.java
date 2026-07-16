@@ -7,6 +7,7 @@ import com.sudoku.sudoku_backend.core.Puzzle;
 import com.sudoku.sudoku_backend.model.Cell;
 import com.sudoku.sudoku_backend.model.CellGrid;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -18,17 +19,16 @@ import static com.sudoku.sudoku_backend.SudokuTestConstants.*;
 
 public class PuzzleServiceTest {
 
-    static IntStream seeds() {
+    private static IntStream seeds() {
         return IntStream.range(0, SEED_COUNT);
     }
 
     @Nested
     class ConstructorTests {
 
-        @ParameterizedTest
-        @MethodSource("com.sudoku.sudoku_backend.service.PuzzleServiceTest#seeds")
-        void shouldNotNull(int seed) {
-
+        @Test
+        void shouldThrowWhenGeneratorIsNull() {
+            assertThrows(NullPointerException.class, () -> new PuzzleService(null));
         }
     }
 
@@ -37,7 +37,38 @@ public class PuzzleServiceTest {
 
         @ParameterizedTest
         @MethodSource("com.sudoku.sudoku_backend.service.PuzzleServiceTest#seeds")
-        void shouldReturnMappedPuzzleAsCellGrid(int seed) {
+        void shouldReturnMappedPuzzleAsCellGridWithDifficultyEasy(int seed) {
+            Random expectedRandom = new Random(seed);
+            Random actualRandom = new Random(seed);
+
+            Generator expectedGenerator = new Generator(expectedRandom);
+            Generator actualGenerator = new Generator(actualRandom);
+
+            int target = Difficulty.EASY.getTarget();
+
+            Grid grid = expectedGenerator.generateGrid();
+            Puzzle puzzle = expectedGenerator.createPuzzle(grid, target);
+            Grid expectedCarved = puzzle.carved();
+
+            PuzzleService puzzleService = new PuzzleService(actualGenerator);
+            CellGrid cellGrid = puzzleService.newPuzzle(Difficulty.EASY);
+
+            for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
+                for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
+                    Cell cell = cellGrid.getCell(row, col);
+                    assertEquals(row, cell.getRow());
+                    assertEquals(col, cell.getCol());
+                    int expectedValue = expectedCarved.getValue(row, col);
+                    assertEquals(expectedValue, cell.getValue());
+                    boolean isGiven = expectedValue != 0;
+                    assertEquals(isGiven, cell.isGiven());
+                }
+            }
+        }
+
+        @ParameterizedTest
+        @MethodSource("com.sudoku.sudoku_backend.service.PuzzleServiceTest#seeds")
+        void shouldReturnMappedPuzzleAsCellGridWithDifficultyMedium(int seed) {
             Random expectedRandom = new Random(seed);
             Random actualRandom = new Random(seed);
 
@@ -64,6 +95,45 @@ public class PuzzleServiceTest {
                     assertEquals(isGiven, cell.isGiven());
                 }
             }
+        }
+
+        @ParameterizedTest
+        @MethodSource("com.sudoku.sudoku_backend.service.PuzzleServiceTest#seeds")
+        void shouldReturnMappedPuzzleAsCellGridWithDifficultyHard(int seed) {
+            Random expectedRandom = new Random(seed);
+            Random actualRandom = new Random(seed);
+
+            Generator expectedGenerator = new Generator(expectedRandom);
+            Generator actualGenerator = new Generator(actualRandom);
+
+            int target = Difficulty.HARD.getTarget();
+
+            Grid grid = expectedGenerator.generateGrid();
+            Puzzle puzzle = expectedGenerator.createPuzzle(grid, target);
+            Grid expectedCarved = puzzle.carved();
+
+            PuzzleService puzzleService = new PuzzleService(actualGenerator);
+            CellGrid cellGrid = puzzleService.newPuzzle(Difficulty.HARD);
+
+            for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
+                for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
+                    Cell cell = cellGrid.getCell(row, col);
+                    assertEquals(row, cell.getRow());
+                    assertEquals(col, cell.getCol());
+                    int expectedValue = expectedCarved.getValue(row, col);
+                    assertEquals(expectedValue, cell.getValue());
+                    boolean isGiven = expectedValue != 0;
+                    assertEquals(isGiven, cell.isGiven());
+                }
+            }
+        }
+
+        @Test
+        void shouldThrowWhenDifficultyIsNull() {
+            Random random = new Random();
+            Generator generator = new Generator(random);
+            PuzzleService puzzleService = new PuzzleService(generator);
+            assertThrows(NullPointerException.class, () -> puzzleService.newPuzzle(null));
         }
     }
 }

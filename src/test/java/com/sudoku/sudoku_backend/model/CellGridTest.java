@@ -32,7 +32,7 @@ public class CellGridTest {
 
         @Test
         void shouldThrowWhenCellsIsNull() {
-            assertThrows(IllegalArgumentException.class, () -> new CellGrid(null));
+            assertThrows(NullPointerException.class, () -> new CellGrid(null));
         }
 
         @Test
@@ -51,7 +51,7 @@ public class CellGridTest {
         void shouldThrowWhenRowIsNull() {
             Cell[][] cells = createCells();
             cells[ROW] = null;
-            assertThrows(IllegalArgumentException.class, () -> new CellGrid(cells));
+            assertThrows(NullPointerException.class, () -> new CellGrid(cells));
         }
 
         @Test
@@ -72,7 +72,7 @@ public class CellGridTest {
         void shouldThrowWhenCellIsNull() {
             Cell[][] cells = createCells();
             cells[ROW][COL] = null;
-            assertThrows(IllegalArgumentException.class, () -> new CellGrid(cells));
+            assertThrows(NullPointerException.class, () -> new CellGrid(cells));
         }
     }
 

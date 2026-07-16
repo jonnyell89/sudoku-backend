@@ -16,7 +16,7 @@ import static com.sudoku.sudoku_backend.SudokuTestConstants.*;
 
 public class ShuffleTest {
 
-    static IntStream seeds() {
+    private static IntStream seeds() {
         return IntStream.range(0, SEED_COUNT);
     }
 

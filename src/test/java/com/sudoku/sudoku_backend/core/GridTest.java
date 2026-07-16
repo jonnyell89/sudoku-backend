@@ -72,7 +72,7 @@ public class GridTest {
 
         @Test
         void shouldThrowWhenCellsIsNull() {
-            assertThrows(IllegalArgumentException.class, () -> new Grid(null));
+            assertThrows(NullPointerException.class, () -> new Grid(null));
         }
 
         @Test
@@ -91,7 +91,7 @@ public class GridTest {
         void shouldThrowWhenRowIsNull() {
             int[][] cells = createCells();
             cells[ROW] = null;
-            assertThrows(IllegalArgumentException.class, () -> new Grid(cells));
+            assertThrows(NullPointerException.class, () -> new Grid(cells));
         }
 
         @Test

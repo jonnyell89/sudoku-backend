@@ -16,7 +16,7 @@ import static com.sudoku.sudoku_backend.SudokuTestConstants.*;
 
 public class PuzzleMapperTest {
 
-    static IntStream seeds() {
+    private static IntStream seeds() {
         return IntStream.range(0, SEED_COUNT);
     }
 
@@ -44,6 +44,6 @@ public class PuzzleMapperTest {
 
     @Test
     void shouldThrowWhenPuzzleIsNull() {
-        assertThrows(IllegalArgumentException.class, () -> PuzzleMapper.map(null));
+        assertThrows(NullPointerException.class, () -> PuzzleMapper.map(null));
     }
 }

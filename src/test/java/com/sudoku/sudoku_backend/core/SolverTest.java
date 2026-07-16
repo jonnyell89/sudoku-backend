@@ -23,7 +23,7 @@ public class SolverTest {
         solver = new Solver(random);
     }
 
-    static Stream<int[][]> testGrids() {
+    private static Stream<int[][]> testGrids() {
         return Stream.of(easy, medium, hard, expert, master, extreme);
     }
 

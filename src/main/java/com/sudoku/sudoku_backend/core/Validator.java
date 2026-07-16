@@ -3,6 +3,8 @@ package com.sudoku.sudoku_backend.core;
 import com.sudoku.sudoku_backend.SudokuConstants;
 import com.sudoku.sudoku_backend.model.Cell;
 
+import java.util.Objects;
+
 public class Validator {
 
     public static void validateIndex(String unit, int index) {
@@ -18,18 +20,14 @@ public class Validator {
     }
 
     public static void validateCells(int[][] cells) {
-        if (cells == null) {
-            throw new IllegalArgumentException("cells must not be null.");
-        }
+        Objects.requireNonNull(cells, "cells must not be null.");
         if (cells.length != SudokuConstants.GRID_SIZE) {
             throw new IllegalArgumentException(String.format("cells must contain %d rows.", SudokuConstants.GRID_SIZE));
         }
         for (int row = 0; row < cells.length; row++) {
-            if (cells[row] == null) {
-                throw new IllegalArgumentException(String.format("Row %d must not be null.", row));
-            }
+            Objects.requireNonNull(cells[row], String.format("row %d must not be null.", row));
             if (cells[row].length != SudokuConstants.GRID_SIZE) {
-                throw new IllegalArgumentException(String.format("Row %d must contain %d cells.", row, SudokuConstants.GRID_SIZE));
+                throw new IllegalArgumentException(String.format("row %d must contain %d cells.", row, SudokuConstants.GRID_SIZE));
             }
             for (int col = 0; col < cells[row].length; col++) {
                 Validator.validateValue(cells[row][col]);
@@ -38,23 +36,17 @@ public class Validator {
     }
 
     public static void validateCells(Cell[][] cells) {
-        if (cells == null) {
-            throw new IllegalArgumentException("cells must not be null.");
-        }
+        Objects.requireNonNull(cells, "cells must not be null.");
         if (cells.length != SudokuConstants.GRID_SIZE) {
             throw new IllegalArgumentException(String.format("cells must contain %d rows.", SudokuConstants.GRID_SIZE));
         }
         for (int row = 0; row < cells.length; row++) {
-            if (cells[row] == null) {
-                throw new IllegalArgumentException(String.format("Row %d must not be null.", row));
-            }
+            Objects.requireNonNull(cells[row], String.format("row %d must not be null.", row));
             if (cells[row].length != SudokuConstants.GRID_SIZE) {
-                throw new IllegalArgumentException(String.format("Row %d must contain %d cells.", row, SudokuConstants.GRID_SIZE));
+                throw new IllegalArgumentException(String.format("row %d must contain %d cells.", row, SudokuConstants.GRID_SIZE));
             }
             for (int col = 0; col < cells[row].length; col++) {
-                if (cells[row][col] == null) {
-                    throw new IllegalArgumentException(String.format("cells[%d][%d] must not be null.", row, col));
-                }
+                Objects.requireNonNull(cells[row][col], String.format("cells[%d][%d] must not be null.", row, col));
                 Validator.validateValue(cells[row][col].getValue());
             }
         }

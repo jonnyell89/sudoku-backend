@@ -14,11 +14,11 @@ import static com.sudoku.sudoku_backend.SudokuTestConstants.*;
 
 public class GeneratorTest {
 
-    static IntStream seeds() {
+    private static IntStream seeds() {
         return IntStream.range(0, SEED_COUNT);
     }
 
-    static IntStream targets() {
+    private static IntStream targets() {
         return IntStream.rangeClosed(MIN_TARGET, MAX_TARGET);
     }
 
@@ -179,6 +179,14 @@ public class GeneratorTest {
                     assertEquals(expectedCell, actualCell);
                 }
             }
+        }
+
+        @Test
+        void shouldThrowWhenGridIsNull() {
+            Random random = new Random();
+            Generator generator = new Generator(random);
+
+            assertThrows(NullPointerException.class, () -> generator.createPuzzle(null, TARGET));
         }
 
         @Test

@@ -5,7 +5,8 @@ import com.sudoku.sudoku_backend.core.Generator;
 import com.sudoku.sudoku_backend.core.Grid;
 import com.sudoku.sudoku_backend.core.Puzzle;
 import com.sudoku.sudoku_backend.model.Cell;
-import com.sudoku.sudoku_backend.model.CellGrid;
+import com.sudoku.sudoku_backend.persistence.GameRepository;
+import com.sudoku.sudoku_backend.persistence.NewGame;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,6 +17,9 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static com.sudoku.sudoku_backend.SudokuTestConstants.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class PuzzleServiceTest {
 
@@ -23,12 +27,18 @@ public class PuzzleServiceTest {
         return IntStream.range(0, SEED_COUNT);
     }
 
+    private static GameRepository mockGameRepository() {
+        GameRepository gameRepository = mock(GameRepository.class);
+        when(gameRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        return gameRepository;
+    }
+
     @Nested
     class ConstructorTests {
 
         @Test
-        void shouldThrowWhenGeneratorIsNull() {
-            assertThrows(NullPointerException.class, () -> new PuzzleService(null));
+        void shouldThrowWhenGeneratorAndGameRepositoryIsNull() {
+            assertThrows(NullPointerException.class, () -> new PuzzleService(null, null));
         }
     }
 
@@ -50,12 +60,14 @@ public class PuzzleServiceTest {
             Puzzle puzzle = expectedGenerator.createPuzzle(grid, target);
             Grid expectedCarved = puzzle.carved();
 
-            PuzzleService puzzleService = new PuzzleService(actualGenerator);
-            CellGrid cellGrid = puzzleService.newPuzzle(Difficulty.EASY);
+            GameRepository gameRepository = mockGameRepository();
+
+            PuzzleService puzzleService = new PuzzleService(actualGenerator, gameRepository);
+            NewGame newGame = puzzleService.newPuzzle(Difficulty.EASY);
 
             for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
                 for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
-                    Cell cell = cellGrid.getCell(row, col);
+                    Cell cell = newGame.cellGrid().getCell(row, col);
                     assertEquals(row, cell.getRow());
                     assertEquals(col, cell.getCol());
                     int expectedValue = expectedCarved.getValue(row, col);
@@ -81,12 +93,14 @@ public class PuzzleServiceTest {
             Puzzle puzzle = expectedGenerator.createPuzzle(grid, target);
             Grid expectedCarved = puzzle.carved();
 
-            PuzzleService puzzleService = new PuzzleService(actualGenerator);
-            CellGrid cellGrid = puzzleService.newPuzzle(Difficulty.MEDIUM);
+            GameRepository gameRepository = mockGameRepository();
+
+            PuzzleService puzzleService = new PuzzleService(actualGenerator, gameRepository);
+            NewGame newGame = puzzleService.newPuzzle(Difficulty.MEDIUM);
 
             for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
                 for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
-                    Cell cell = cellGrid.getCell(row, col);
+                    Cell cell = newGame.cellGrid().getCell(row, col);
                     assertEquals(row, cell.getRow());
                     assertEquals(col, cell.getCol());
                     int expectedValue = expectedCarved.getValue(row, col);
@@ -112,12 +126,14 @@ public class PuzzleServiceTest {
             Puzzle puzzle = expectedGenerator.createPuzzle(grid, target);
             Grid expectedCarved = puzzle.carved();
 
-            PuzzleService puzzleService = new PuzzleService(actualGenerator);
-            CellGrid cellGrid = puzzleService.newPuzzle(Difficulty.HARD);
+            GameRepository gameRepository = mockGameRepository();
+
+            PuzzleService puzzleService = new PuzzleService(actualGenerator, gameRepository);
+            NewGame newGame = puzzleService.newPuzzle(Difficulty.HARD);
 
             for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
                 for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
-                    Cell cell = cellGrid.getCell(row, col);
+                    Cell cell = newGame.cellGrid().getCell(row, col);
                     assertEquals(row, cell.getRow());
                     assertEquals(col, cell.getCol());
                     int expectedValue = expectedCarved.getValue(row, col);
@@ -132,7 +148,8 @@ public class PuzzleServiceTest {
         void shouldThrowWhenDifficultyIsNull() {
             Random random = new Random();
             Generator generator = new Generator(random);
-            PuzzleService puzzleService = new PuzzleService(generator);
+            GameRepository gameRepository = mockGameRepository();
+            PuzzleService puzzleService = new PuzzleService(generator, gameRepository);
             assertThrows(NullPointerException.class, () -> puzzleService.newPuzzle(null));
         }
     }

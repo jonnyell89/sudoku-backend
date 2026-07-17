@@ -544,11 +544,50 @@ public class GridTest {
     }
 
     @Nested
+    class SerialiseTests {
+
+        @BeforeEach
+        void init() {
+            grid = new Grid(createCells());
+        }
+
+        @Test
+        void shouldReturnGridAs81CharacterString() {
+            StringBuilder stringBuilder = new StringBuilder();
+            while (stringBuilder.length() < SudokuConstants.GRID_CELLS) {
+                stringBuilder.append("1");
+            }
+            assertEquals(stringBuilder.toString(), grid.serialise());
+        }
+
+        @Test
+        void shouldReturnRowMajorOrderedStringForCarvedPuzzle() {
+            grid = new Grid(TestGrids.easy);
+            assertTrue(grid.isValid());
+            String expected = "410060070003085009020370501030609250600501000009020003006200745000406800284000196";
+            assertEquals(expected, grid.serialise());
+        }
+
+        @Test
+        void shouldReturnEmptyGridAs81ZeroCharacters() {
+            grid = new Grid();
+            String expected = "0".repeat(SudokuConstants.GRID_CELLS);
+            assertEquals(expected, grid.serialise());
+        }
+    }
+
+    @Nested
     class EqualsTests {
 
         @BeforeEach
         void init() {
             grid = new Grid(createCells());
+        }
+
+        @Test
+        void shouldReturnTrueWhenComparedToSameType() {
+            Grid expectedGrid = new Grid(createCells());
+            assertEquals(grid, expectedGrid);
         }
 
         @Test

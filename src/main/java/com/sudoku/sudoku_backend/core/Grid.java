@@ -122,16 +122,6 @@ public class Grid {
         return new Grid(this.cells);
     }
 
-    public String serialise() {
-        StringBuilder stringBuilder = new StringBuilder(SudokuConstants.GRID_CELLS);
-        for (int[] row : cells) {
-            for (int cell : row) {
-                stringBuilder.append(cell);
-            }
-        }
-        return stringBuilder.toString();
-    }
-
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;

@@ -29,15 +29,12 @@ public class Generator {
         }
 
         Grid copy = grid.copy();
-
         int removals = 0;
         for (Coordinate coordinate : shuffledCoordinates()) {
             int row = coordinate.row();
             int col = coordinate.col();
             int value = copy.getValue(row, col);
-
             copy.clearValue(row, col);
-
             if (solver.countSolutions(copy) == 1) {
                 removals++;
                 if (removals >= target) break;

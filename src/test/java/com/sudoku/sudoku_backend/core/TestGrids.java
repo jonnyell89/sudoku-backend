@@ -2,7 +2,7 @@ package com.sudoku.sudoku_backend.core;
 
 public class TestGrids {
 
-    static final int[][] easy = new int[][]{
+    public static final int[][] easy = new int[][]{
             {4, 1, 0, 0, 6, 0, 0, 7, 0},
             {0, 0, 3, 0, 8, 5, 0, 0, 9},
             {0, 2, 0, 3, 7, 0, 5, 0, 1},
@@ -14,7 +14,7 @@ public class TestGrids {
             {2, 8, 4, 0, 0, 0, 1, 9, 6},
     };
 
-    static final int[][] medium = new int[][]{
+    public static final int[][] medium = new int[][]{
             {3, 0, 1, 0, 8, 0, 5, 0, 0},
             {0, 0, 0, 0, 0, 7, 0, 2, 0},
             {9, 2, 0, 0, 0, 0, 8, 6, 0},
@@ -26,7 +26,7 @@ public class TestGrids {
             {0, 0, 0, 0, 0, 6, 0, 3, 9},
     };
 
-    static final int[][] hard = new int[][]{
+    public static final int[][] hard = new int[][]{
             {2, 0, 1, 9, 7, 5, 0, 6, 4},
             {8, 7, 6, 4, 0, 1, 0, 5, 3},
             {0, 9, 0, 0, 0, 0, 0, 7, 2},
@@ -38,7 +38,7 @@ public class TestGrids {
             {0, 0, 0, 3, 0, 0, 7, 0, 0},
     };
 
-    static final int[][] expert = new int[][]{
+    public static final int[][] expert = new int[][]{
             {4, 3, 0, 0, 0, 7, 0, 0, 0},
             {7, 0, 2, 0, 0, 0, 5, 0, 3},
             {0, 0, 0, 1, 0, 3, 0, 7, 2},
@@ -50,7 +50,7 @@ public class TestGrids {
             {0, 0, 9, 0, 0, 0, 0, 0, 0},
     };
 
-    static final int[][] master = new int[][]{
+    public static final int[][] master = new int[][]{
             {0, 0, 6, 0, 0, 5, 0, 0, 0},
             {8, 0, 0, 0, 0, 0, 0, 4, 9},
             {0, 7, 3, 0, 9, 0, 2, 0, 0},
@@ -62,7 +62,7 @@ public class TestGrids {
             {0, 0, 0, 5, 3, 0, 0, 0, 4},
     };
 
-    static final int[][] extreme = new int[][]{
+    public static final int[][] extreme = new int[][]{
             {0, 0, 0, 0, 0, 0, 0, 6, 0},
             {0, 2, 0, 3, 0, 0, 1, 0, 0},
             {5, 0, 0, 8, 0, 9, 0, 0, 0},
@@ -74,7 +74,7 @@ public class TestGrids {
             {0, 1, 0, 9, 0, 0, 8, 0, 0},
     };
 
-    static final int[][] duplicates = new int[][]{
+    public static final int[][] duplicates = new int[][]{
             {1, 1, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -86,7 +86,7 @@ public class TestGrids {
             {0, 0, 0, 0, 0, 0, 0, 0, 0},
     };
 
-    static final int[][] unsolvable = new int[][] {
+    public static final int[][] unsolvable = new int[][] {
             {1, 2, 3, 4, 5, 6, 7, 8, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 9, 0, 0},

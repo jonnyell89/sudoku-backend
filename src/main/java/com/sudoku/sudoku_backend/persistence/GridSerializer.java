@@ -19,4 +19,20 @@ public class GridSerializer {
         }
         return stringBuilder.toString();
     }
+
+    public static Grid deserialize(String serializedGrid) {
+        Objects.requireNonNull(serializedGrid, "serializedGrid must not be null.");
+        if (serializedGrid.length() != SudokuConstants.GRID_CELLS) {
+            throw new IllegalArgumentException(String.format("serializedGrid must contain %d letters.", SudokuConstants.GRID_CELLS));
+        }
+        int[][] cells = new int[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
+                cells[row][col] = serializedGrid.charAt(row * SudokuConstants.GRID_SIZE + col) - '0';
+            }
+        }
+        Grid grid = new Grid(cells);
+        grid.validate();
+        return grid;
+    }
 }

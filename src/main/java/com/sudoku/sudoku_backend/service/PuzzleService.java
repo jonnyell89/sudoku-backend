@@ -31,7 +31,7 @@ public class PuzzleService {
         GameEntity gameEntity = new GameEntity(
                 GridSerializer.serialize(puzzle.complete()),
                 GridSerializer.serialize(puzzle.carved()),
-                GridSerializer.serialize(puzzle.carved()) // Current field starts as puzzle.carved().
+                GridSerializer.serialize(puzzle.carved()) // current field starts as puzzle.carved().
         );
         GameEntity saved = gameRepository.save(gameEntity);
         return new NewGame(saved.getId(), PuzzleMapper.map(puzzle));

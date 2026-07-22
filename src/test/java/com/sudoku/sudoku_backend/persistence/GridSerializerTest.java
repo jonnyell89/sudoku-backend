@@ -11,24 +11,26 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GridSerializerTest {
 
+    private static final int[][] KNOWN_GRID = {
+            {1, 2, 3, 4, 5, 6, 7, 8, 9},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 3},
+    };
+
+    private static final String KNOWN_GRID_SERIALIZED = "123456789" + "0".repeat(71) + "3";
+
     @Nested
     class SerializeTests {
 
         @Test
         void shouldSerializeKnownGridToExpectedString() {
-            int[][] data = {
-                    {1, 2, 3, 4, 5, 6, 7, 8, 9},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 3},
-            };
-            String expected = "123456789" + "0".repeat(71) + "3";
-            assertEquals(expected, serialize(new Grid(data)));
+            assertEquals(KNOWN_GRID_SERIALIZED, serialize(new Grid(KNOWN_GRID)));
         }
 
         @Test
@@ -57,26 +59,14 @@ public class GridSerializerTest {
     class DeserializeTests {
 
         @Test
-        void shouldRoundTrip() {
+        void shouldReturnEqualGridAfterSerializeThenDeserialize() {
             Grid grid = new Grid(easy);
             assertEquals(grid, deserialize(serialize(grid)));
         }
 
         @Test
         void shouldDeserializeKnownStringToExpectedGrid() {
-            int[][] data = {
-                    {1, 2, 3, 4, 5, 6, 7, 8, 9},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 3},
-            };
-            String serialized = "123456789" + "0".repeat(71) + "3";
-            assertEquals(new Grid(data), deserialize(serialized));
+            assertEquals(new Grid(KNOWN_GRID), deserialize(KNOWN_GRID_SERIALIZED));
         }
 
         @Test

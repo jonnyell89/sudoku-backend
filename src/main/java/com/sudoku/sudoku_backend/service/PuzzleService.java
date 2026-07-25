@@ -1,5 +1,6 @@
 package com.sudoku.sudoku_backend.service;
 
+import com.sudoku.sudoku_backend.SudokuConstants;
 import com.sudoku.sudoku_backend.core.Generator;
 import com.sudoku.sudoku_backend.core.Grid;
 import com.sudoku.sudoku_backend.core.Puzzle;
@@ -42,14 +43,15 @@ public class PuzzleService {
     }
 
     public boolean checkGuess(long id, int row, int col, int value) {
+        GameEntity gameEntity = gameRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(String.format("gameEntity was not found with id: %d", id)));
         Validator.validateIndex("row", row);
         Validator.validateIndex("col", col);
         Validator.validateValue(value);
-        GameEntity gameEntity = gameRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(String.format("gameEntity was not found with id: %d", id)));
 
         Grid carved = GridSerializer.deserialize(gameEntity.getCarved());
-        if (carved.getValue(row, col) == value) {
+        if (carved.getValue(row, col) != SudokuConstants.EMPTY_CELL) {
+//        if (carved.getValue(row, col) == value) {
             return false; // rejects guesses on clues
         }
 

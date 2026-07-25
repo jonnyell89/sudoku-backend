@@ -37,8 +37,16 @@ public class PuzzleServiceTest {
     class ConstructorTests {
 
         @Test
-        void shouldThrowWhenGeneratorAndGameRepositoryIsNull() {
-            assertThrows(NullPointerException.class, () -> new PuzzleService(null, null));
+        void shouldThrowWhenGeneratorIsNull() {
+            GameRepository gameRepository = mock(GameRepository.class);
+            assertThrows(NullPointerException.class, () -> new PuzzleService(null, gameRepository));
+        }
+
+        @Test
+        void shouldThrowWhenGameRepositoryIsNull() {
+            Random random = new Random();
+            Generator generator = new Generator(random);
+            assertThrows(NullPointerException.class, () -> new PuzzleService(generator, null));
         }
     }
 
@@ -151,6 +159,60 @@ public class PuzzleServiceTest {
             GameRepository gameRepository = mockGameRepository();
             PuzzleService puzzleService = new PuzzleService(generator, gameRepository);
             assertThrows(NullPointerException.class, () -> puzzleService.newPuzzle(null));
+        }
+    }
+
+    @Nested
+    class CheckGuessTests {
+
+        @Test
+        void shouldReturnTrueWhenGuessIsCorrect() {
+
+        }
+
+        @Test
+        void shouldReturnFalseWhenGuessIsGiven() {
+
+        }
+
+        @Test
+        void shouldReturnFalseWhenGuessIsIncorrect() {
+
+        }
+
+        @Test
+        void shouldThrowWhenIdIsInvalid() {
+
+        }
+
+        @Test
+        void shouldThrowWhenRowIsBelowMin() {
+
+        }
+
+        @Test
+        void shouldThrowWhenRowIsAboveMax() {
+
+        }
+
+        @Test
+        void shouldThrowWhenColIsBelowMin() {
+
+        }
+
+        @Test
+        void shouldThrowWhenColIsAboveMax() {
+
+        }
+
+        @Test
+        void shouldThrowWhenValueIsBelowMin() {
+
+        }
+
+        @Test
+        void shouldThrowWhenValueIsAboveMax() {
+
         }
     }
 }

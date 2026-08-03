@@ -20,4 +20,5 @@ public final class SudokuTestConstants {
     public static final int MAX_TARGET = 57;
     public static final int TARGET_BELOW_MIN = MIN_TARGET - 1;
     public static final int TARGET_ABOVE_MAX = MAX_TARGET + 1;
+    public static final long ID = 1L;
 }

@@ -27,8 +27,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static com.sudoku.sudoku_backend.SudokuTestConstants.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import org.mockito.ArgumentCaptor;
 
 public class PuzzleServiceTest {
 
@@ -73,7 +77,7 @@ public class PuzzleServiceTest {
                 serialized,
                 serialized
         );
-        when(gameRepository.findById(1L)).thenReturn(Optional.of(gameEntity));
+        when(gameRepository.findById(ID)).thenReturn(Optional.of(gameEntity));
     }
 
     @Nested
@@ -124,6 +128,29 @@ public class PuzzleServiceTest {
         }
 
         @Test
+        void shouldSaveCorrectlyPopulatedGameEntity() {
+            Grid complete = new Grid(SOLVED);
+            Grid carved = new Grid(carve(SOLVED, ROW, COL));
+            Puzzle puzzle = new Puzzle(complete, carved);
+
+            Generator generator = mockGenerator();
+            when(generator.generateGrid()).thenReturn(complete);
+            when(generator.createPuzzle(any(), anyInt())).thenReturn(puzzle);
+
+            GameRepository gameRepository = mockGameRepository();
+            PuzzleService puzzleService = new PuzzleService(generator, gameRepository);
+            puzzleService.newPuzzle(Difficulty.EASY);
+
+            ArgumentCaptor<GameEntity> captor = ArgumentCaptor.forClass(GameEntity.class);
+            verify(gameRepository).save(captor.capture());
+            GameEntity gameEntity = captor.getValue();
+
+            assertEquals(complete, GridSerializer.deserialize(gameEntity.getComplete()));
+            assertEquals(carved, GridSerializer.deserialize(gameEntity.getCarved()));
+            assertEquals(carved, GridSerializer.deserialize(gameEntity.getCurrent()));
+        }
+
+        @Test
         void shouldThrowWhenDifficultyIsNull() {
             assertThrows(NullPointerException.class, () -> puzzleService.newPuzzle(null));
         }
@@ -141,14 +168,22 @@ public class PuzzleServiceTest {
         void shouldReturnTrueWhenGuessIsCorrect() {
             stubGame(SOLVED, BLANK);
             int guess = SOLVED[ROW][COL];
-            assertTrue(puzzleService.checkGuess(1L, ROW, COL, guess));
+            assertTrue(puzzleService.checkGuess(ID, ROW, COL, guess));
+            GameEntity gameEntity = gameRepository.findById(ID)
+                    .orElseThrow();
+            Grid current = GridSerializer.deserialize(gameEntity.getCurrent());
+            assertEquals(guess, current.getValue(ROW, COL));
         }
 
         @Test
         void shouldReturnFalseWhenGuessIsGiven() {
             stubGame(SOLVED, carve(SOLVED, ROW, COL));
             int clue = SOLVED[ROW][COL];
-            assertFalse(puzzleService.checkGuess(1L, ROW, COL, clue));
+            assertFalse(puzzleService.checkGuess(ID, ROW, COL, clue));
+            GameEntity gameEntity = gameRepository.findById(ID)
+                    .orElseThrow();
+            Grid current = GridSerializer.deserialize(gameEntity.getCurrent());
+            assertEquals(clue, current.getValue(ROW, COL));
         }
 
         @Test
@@ -156,42 +191,46 @@ public class PuzzleServiceTest {
             stubGame(SOLVED, BLANK);
             int correct = SOLVED[ROW][COL];
             int incorrect = (correct % SudokuConstants.MAX_VALUE) + 1;
-            assertFalse(puzzleService.checkGuess(1L, ROW, COL, incorrect));
+            assertFalse(puzzleService.checkGuess(ID, ROW, COL, incorrect));
+            GameEntity gameEntity = gameRepository.findById(ID)
+                    .orElseThrow();
+            Grid current = GridSerializer.deserialize(gameEntity.getCurrent());
+            assertEquals(SudokuConstants.EMPTY_CELL, current.getValue(ROW, COL));
         }
 
         @Test
         void shouldThrowWhenIdIsInvalid() {
-            assertThrows(NoSuchElementException.class, () -> puzzleService.checkGuess(1L, ROW, COL, VALUE));
+            assertThrows(NoSuchElementException.class, () -> puzzleService.checkGuess(ID, ROW, COL, VALUE));
         }
 
         @Test
         void shouldThrowWhenRowIsBelowMin() {
-            assertThrows(IllegalArgumentException.class, () -> puzzleService.checkGuess(1L, ROW_BELOW_MIN, COL, VALUE));
+            assertThrows(IllegalArgumentException.class, () -> puzzleService.checkGuess(ID, ROW_BELOW_MIN, COL, VALUE));
         }
 
         @Test
         void shouldThrowWhenRowIsAboveMax() {
-            assertThrows(IllegalArgumentException.class, () -> puzzleService.checkGuess(1L, ROW_ABOVE_MAX, COL, VALUE));
+            assertThrows(IllegalArgumentException.class, () -> puzzleService.checkGuess(ID, ROW_ABOVE_MAX, COL, VALUE));
         }
 
         @Test
         void shouldThrowWhenColIsBelowMin() {
-            assertThrows(IllegalArgumentException.class, () -> puzzleService.checkGuess(1L, ROW, COL_BELOW_MIN, VALUE));
+            assertThrows(IllegalArgumentException.class, () -> puzzleService.checkGuess(ID, ROW, COL_BELOW_MIN, VALUE));
         }
 
         @Test
         void shouldThrowWhenColIsAboveMax() {
-            assertThrows(IllegalArgumentException.class, () -> puzzleService.checkGuess(1L, ROW, COL_ABOVE_MAX, VALUE));
+            assertThrows(IllegalArgumentException.class, () -> puzzleService.checkGuess(ID, ROW, COL_ABOVE_MAX, VALUE));
         }
 
         @Test
         void shouldThrowWhenValueIsBelowMin() {
-            assertThrows(IllegalArgumentException.class, () -> puzzleService.checkGuess(1L, ROW, COL, VALUE_BELOW_MIN));
+            assertThrows(IllegalArgumentException.class, () -> puzzleService.checkGuess(ID, ROW, COL, VALUE_BELOW_MIN));
         }
 
         @Test
         void shouldThrowWhenValueIsAboveMax() {
-            assertThrows(IllegalArgumentException.class, () -> puzzleService.checkGuess(1L, ROW, COL, VALUE_ABOVE_MAX));
+            assertThrows(IllegalArgumentException.class, () -> puzzleService.checkGuess(ID, ROW, COL, VALUE_ABOVE_MAX));
         }
     }
 
@@ -206,18 +245,18 @@ public class PuzzleServiceTest {
         @Test
         void shouldReturnTrueWhenCompleteAndCurrentMatch() {
             stubGame(SOLVED, SOLVED);
-            assertTrue(puzzleService.isSolved(1L));
+            assertTrue(puzzleService.isSolved(ID));
         }
 
         @Test
         void shouldReturnFalseWhenCompleteAndCurrentDoNotMatch() {
             stubGame(SOLVED, BLANK);
-            assertFalse(puzzleService.isSolved(1L));
+            assertFalse(puzzleService.isSolved(ID));
         }
 
         @Test
         void shouldThrowWhenIdIsInvalid() {
-            assertThrows(NoSuchElementException.class, () -> puzzleService.isSolved(1L));
+            assertThrows(NoSuchElementException.class, () -> puzzleService.isSolved(ID));
         }
     }
 }

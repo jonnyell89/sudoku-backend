@@ -16,6 +16,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Random;
@@ -67,6 +68,14 @@ public class PuzzleServiceTest {
         int[][] carved = new int[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
         carved[keepRow][keepCol] = solved[keepRow][keepCol];
         return carved;
+    }
+
+    private static int[][] copyOf(int[][] source) {
+        int[][] copy = new int[source.length][];
+        for (int row = 0; row < source.length; row++) {
+            copy[row] = Arrays.copyOf(source[row], source[row].length);
+        }
+        return copy;
     }
 
     private void stubGame(int[][] complete, int[][] progress) {
@@ -156,7 +165,7 @@ public class PuzzleServiceTest {
     }
 
     @Nested
-    class CheckGuessTests {
+    class MakeGuessTests {
 
         @BeforeEach
         void init() {
@@ -164,10 +173,12 @@ public class PuzzleServiceTest {
         }
 
         @Test
-        void shouldReturnTrueWhenGuessIsCorrect() {
+        void shouldReturnCorrectTrueAndSolvedFalseWhenGuessIsCorrectOnIncompleteGrid() {
             stubGame(SOLVED, BLANK);
             int guess = SOLVED[ROW][COL];
-            assertTrue(puzzleService.checkGuess(ID, ROW, COL, guess));
+            GuessResult guessResult = puzzleService.makeGuess(ID, ROW, COL, guess);
+            assertTrue(guessResult.correct());
+            assertFalse(guessResult.solved());
             GameEntity gameEntity = gameRepository.findById(ID)
                     .orElseThrow();
             Grid current = GridSerializer.deserialize(gameEntity.getCurrent());
@@ -175,10 +186,27 @@ public class PuzzleServiceTest {
         }
 
         @Test
-        void shouldReturnFalseWhenGuessIsGiven() {
+        void shouldReturnCorrectTrueAndSolvedTrueWhenGuessIsCorrectOnCompleteGrid() {
+            int guess = SOLVED[ROW][COL];
+            int[][] carved = copyOf(SOLVED);
+            carved[ROW][COL] = 0;
+            stubGame(SOLVED, carved);
+            GuessResult guessResult = puzzleService.makeGuess(ID, ROW, COL, guess);
+            assertTrue(guessResult.correct());
+            assertTrue(guessResult.solved());
+            GameEntity gameEntity = gameRepository.findById(ID)
+                    .orElseThrow();
+            Grid current = GridSerializer.deserialize(gameEntity.getCurrent());
+            assertEquals(guess, current.getValue(ROW, COL));
+        }
+
+        @Test
+        void shouldReturnCorrectFalseAndSolvedFalseWhenGuessIsGiven() {
             stubGame(SOLVED, carve(SOLVED, ROW, COL));
             int clue = SOLVED[ROW][COL];
-            assertFalse(puzzleService.checkGuess(ID, ROW, COL, clue));
+            GuessResult guessResult = puzzleService.makeGuess(ID, ROW, COL, clue);
+            assertFalse(guessResult.correct());
+            assertFalse(guessResult.solved());
             GameEntity gameEntity = gameRepository.findById(ID)
                     .orElseThrow();
             Grid current = GridSerializer.deserialize(gameEntity.getCurrent());
@@ -186,11 +214,13 @@ public class PuzzleServiceTest {
         }
 
         @Test
-        void shouldReturnFalseWhenGuessIsIncorrect() {
+        void shouldReturnCorrectFalseAndSolvedFalseWhenGuessIsIncorrect() {
             stubGame(SOLVED, BLANK);
             int correct = SOLVED[ROW][COL];
             int incorrect = (correct % SudokuConstants.MAX_VALUE) + 1;
-            assertFalse(puzzleService.checkGuess(ID, ROW, COL, incorrect));
+            GuessResult guessResult = puzzleService.makeGuess(ID, ROW, COL, incorrect);
+            assertFalse(guessResult.correct());
+            assertFalse(guessResult.solved());
             GameEntity gameEntity = gameRepository.findById(ID)
                     .orElseThrow();
             Grid current = GridSerializer.deserialize(gameEntity.getCurrent());
@@ -199,37 +229,37 @@ public class PuzzleServiceTest {
 
         @Test
         void shouldThrowWhenIdIsInvalid() {
-            assertThrows(NoSuchElementException.class, () -> puzzleService.checkGuess(ID, ROW, COL, VALUE));
+            assertThrows(NoSuchElementException.class, () -> puzzleService.makeGuess(ID, ROW, COL, VALUE));
         }
 
         @Test
         void shouldThrowWhenRowIsBelowMin() {
-            assertThrows(IllegalArgumentException.class, () -> puzzleService.checkGuess(ID, ROW_BELOW_MIN, COL, VALUE));
+            assertThrows(IllegalArgumentException.class, () -> puzzleService.makeGuess(ID, ROW_BELOW_MIN, COL, VALUE));
         }
 
         @Test
         void shouldThrowWhenRowIsAboveMax() {
-            assertThrows(IllegalArgumentException.class, () -> puzzleService.checkGuess(ID, ROW_ABOVE_MAX, COL, VALUE));
+            assertThrows(IllegalArgumentException.class, () -> puzzleService.makeGuess(ID, ROW_ABOVE_MAX, COL, VALUE));
         }
 
         @Test
         void shouldThrowWhenColIsBelowMin() {
-            assertThrows(IllegalArgumentException.class, () -> puzzleService.checkGuess(ID, ROW, COL_BELOW_MIN, VALUE));
+            assertThrows(IllegalArgumentException.class, () -> puzzleService.makeGuess(ID, ROW, COL_BELOW_MIN, VALUE));
         }
 
         @Test
         void shouldThrowWhenColIsAboveMax() {
-            assertThrows(IllegalArgumentException.class, () -> puzzleService.checkGuess(ID, ROW, COL_ABOVE_MAX, VALUE));
+            assertThrows(IllegalArgumentException.class, () -> puzzleService.makeGuess(ID, ROW, COL_ABOVE_MAX, VALUE));
         }
 
         @Test
         void shouldThrowWhenValueIsBelowMin() {
-            assertThrows(IllegalArgumentException.class, () -> puzzleService.checkGuess(ID, ROW, COL, VALUE_BELOW_MIN));
+            assertThrows(IllegalArgumentException.class, () -> puzzleService.makeGuess(ID, ROW, COL, VALUE_BELOW_MIN));
         }
 
         @Test
         void shouldThrowWhenValueIsAboveMax() {
-            assertThrows(IllegalArgumentException.class, () -> puzzleService.checkGuess(ID, ROW, COL, VALUE_ABOVE_MAX));
+            assertThrows(IllegalArgumentException.class, () -> puzzleService.makeGuess(ID, ROW, COL, VALUE_ABOVE_MAX));
         }
     }
 

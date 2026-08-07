@@ -41,7 +41,7 @@ public class PuzzleService {
         return new NewPuzzle(saved.getId(), PuzzleMapper.map(puzzle));
     }
 
-    public boolean checkGuess(long id, int row, int col, int value) {
+    public GuessResult makeGuess(long id, int row, int col, int value) {
         Validator.validateIndex("row", row);
         Validator.validateIndex("col", col);
         Validator.validateValue(value);
@@ -50,19 +50,19 @@ public class PuzzleService {
 
         Grid carved = GridSerializer.deserialize(gameEntity.getCarved());
         if (carved.getValue(row, col) != SudokuConstants.EMPTY_CELL) {
-            return false; // rejects guesses on clues
+            return new GuessResult(false, false); // rejects guesses on clues
         }
 
         Grid complete = GridSerializer.deserialize(gameEntity.getComplete());
         if (complete.getValue(row, col) != value) {
-            return false; // rejects incorrect guesses
+            return new GuessResult(false, false); // rejects incorrect guesses
         }
 
         Grid current = GridSerializer.deserialize(gameEntity.getCurrent());
         current.setValue(row, col, value);
         gameEntity.setCurrent(GridSerializer.serialize(current));
         gameRepository.save(gameEntity);
-        return true;
+        return new GuessResult(true, complete.equals(current));
     }
 
     public boolean isSolved(long id) {

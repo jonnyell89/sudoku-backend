@@ -1,7 +1,8 @@
 package com.sudoku.sudoku_backend.controller;
 
-import com.sudoku.sudoku_backend.service.NewPuzzle;
 import com.sudoku.sudoku_backend.service.Difficulty;
+import com.sudoku.sudoku_backend.service.GuessResult;
+import com.sudoku.sudoku_backend.service.NewPuzzle;
 import com.sudoku.sudoku_backend.service.PuzzleService;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,10 +23,11 @@ public class PuzzleController {
         return PuzzleResponse.from(newPuzzle);
     }
 
-    // POST /api/puzzles/{id}/guesses -> calls checkGuess
+    // POST /api/puzzles/{id}/guesses -> makeGuess -> GuessResult -> GuessResponse
     @PostMapping("/{id}/guesses")
-    public boolean makeGuess(@PathVariable long id, int row, int col, int value) {
-        return puzzleService.checkGuess(id, row, col, value);
+    public GuessResponse makeGuess(@PathVariable long id, int row, int col, int value) {
+        GuessResult guessResult = puzzleService.makeGuess(id, row, col, value);
+        return GuessResponse.from(guessResult);
     }
 
     // GET /api/puzzles/{id}/solved -> calls isSolved

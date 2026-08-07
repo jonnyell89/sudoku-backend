@@ -9,7 +9,6 @@ import com.sudoku.sudoku_backend.model.PuzzleMapper;
 import com.sudoku.sudoku_backend.persistence.GameEntity;
 import com.sudoku.sudoku_backend.persistence.GameRepository;
 import com.sudoku.sudoku_backend.persistence.GridSerializer;
-import com.sudoku.sudoku_backend.persistence.NewGame;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -28,7 +27,7 @@ public class PuzzleService {
         this.gameRepository = gameRepository;
     }
 
-    public NewGame newPuzzle(Difficulty difficulty) {
+    public NewPuzzle newPuzzle(Difficulty difficulty) {
         Objects.requireNonNull(difficulty, "difficulty must not be null.");
         Grid grid = generator.generateGrid();
         Puzzle puzzle = generator.createPuzzle(grid, difficulty.getTarget());
@@ -39,7 +38,7 @@ public class PuzzleService {
                 carved // current field starts as carved
         );
         GameEntity saved = gameRepository.save(gameEntity);
-        return new NewGame(saved.getId(), PuzzleMapper.map(puzzle));
+        return new NewPuzzle(saved.getId(), PuzzleMapper.map(puzzle));
     }
 
     public boolean checkGuess(long id, int row, int col, int value) {

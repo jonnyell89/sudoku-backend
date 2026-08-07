@@ -9,7 +9,6 @@ import com.sudoku.sudoku_backend.model.Cell;
 import com.sudoku.sudoku_backend.persistence.GameEntity;
 import com.sudoku.sudoku_backend.persistence.GameRepository;
 import com.sudoku.sudoku_backend.persistence.GridSerializer;
-import com.sudoku.sudoku_backend.persistence.NewGame;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -113,11 +112,11 @@ public class PuzzleServiceTest {
             Grid expectedCarved = puzzle.carved();
 
             PuzzleService puzzleService = new PuzzleService(actual, mockGameRepository());
-            NewGame newGame = puzzleService.newPuzzle(difficulty);
+            NewPuzzle newPuzzle = puzzleService.newPuzzle(difficulty);
 
             for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
                 for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
-                    Cell cell = newGame.cellGrid().getCell(row, col);
+                    Cell cell = newPuzzle.cellGrid().getCell(row, col);
                     assertEquals(row, cell.getRow());
                     assertEquals(col, cell.getCol());
                     int expectedValue = expectedCarved.getValue(row, col);

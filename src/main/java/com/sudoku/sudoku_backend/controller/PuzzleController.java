@@ -1,9 +1,6 @@
 package com.sudoku.sudoku_backend.controller;
 
-import com.sudoku.sudoku_backend.service.Difficulty;
-import com.sudoku.sudoku_backend.service.GuessResult;
-import com.sudoku.sudoku_backend.service.NewPuzzle;
-import com.sudoku.sudoku_backend.service.PuzzleService;
+import com.sudoku.sudoku_backend.service.*;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,14 +22,15 @@ public class PuzzleController {
 
     // POST /api/puzzles/{id}/guesses -> makeGuess -> GuessResult -> GuessResponse
     @PostMapping("/{id}/guesses")
-    public GuessResponse makeGuess(@PathVariable long id, int row, int col, int value) {
-        GuessResult guessResult = puzzleService.makeGuess(id, row, col, value);
+    public GuessResponse makeGuess(@PathVariable long id, @RequestBody GuessRequest guessRequest) {
+        GuessResult guessResult = puzzleService.makeGuess(id, guessRequest.row(), guessRequest.col(), guessRequest.value());
         return GuessResponse.from(guessResult);
     }
 
-    // GET /api/puzzles/{id}/solved -> calls isSolved
+    // GET /api/puzzles/{id}/solved -> isSolved -> SolvedResult -> SolvedResponse
     @GetMapping("/{id}/solved")
-    public boolean isSolved(@PathVariable long id) {
-        return puzzleService.isSolved(id);
+    public SolvedResponse isSolved(@PathVariable long id) {
+        SolvedResult solvedResult = puzzleService.isSolved(id);
+        return SolvedResponse.from(solvedResult);
     }
 }

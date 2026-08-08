@@ -274,13 +274,15 @@ public class PuzzleServiceTest {
         @Test
         void shouldReturnTrueWhenCompleteAndCurrentMatch() {
             stubGame(SOLVED, SOLVED);
-            assertTrue(puzzleService.isSolved(ID));
+            SolvedResult solvedResult = puzzleService.isSolved(ID);
+            assertTrue(solvedResult.solved());
         }
 
         @Test
         void shouldReturnFalseWhenCompleteAndCurrentDoNotMatch() {
             stubGame(SOLVED, BLANK);
-            assertFalse(puzzleService.isSolved(ID));
+            SolvedResult solvedResult = puzzleService.isSolved(ID);
+            assertFalse(solvedResult.solved());
         }
 
         @Test

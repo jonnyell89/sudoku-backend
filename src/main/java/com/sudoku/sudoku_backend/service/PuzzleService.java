@@ -65,11 +65,11 @@ public class PuzzleService {
         return new GuessResult(true, complete.equals(current));
     }
 
-    public boolean isSolved(long id) {
+    public SolvedResult isSolved(long id) {
         GameEntity gameEntity = gameRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(String.format("gameEntity was not found with id: %d", id)));
         Grid complete = GridSerializer.deserialize(gameEntity.getComplete());
         Grid current = GridSerializer.deserialize(gameEntity.getCurrent());
-        return complete.equals(current);
+        return new SolvedResult(complete.equals(current));
     }
 }

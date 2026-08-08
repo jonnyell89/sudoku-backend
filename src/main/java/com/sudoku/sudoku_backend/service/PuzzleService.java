@@ -46,7 +46,7 @@ public class PuzzleService {
         Validator.validateIndex("col", col);
         Validator.validateValue(value);
         GameEntity gameEntity = gameRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(String.format("gameEntity was not found with id: %d", id)));
+                .orElseThrow(() -> new NoSuchElementException(String.format("Puzzle Not Found with id: %d", id)));
 
         Grid carved = GridSerializer.deserialize(gameEntity.getCarved());
         if (carved.getValue(row, col) != SudokuConstants.EMPTY_CELL) {
@@ -67,7 +67,7 @@ public class PuzzleService {
 
     public SolvedResult isSolved(long id) {
         GameEntity gameEntity = gameRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(String.format("gameEntity was not found with id: %d", id)));
+                .orElseThrow(() -> new NoSuchElementException(String.format("Puzzle Not Found with id: %d", id)));
         Grid complete = GridSerializer.deserialize(gameEntity.getComplete());
         Grid current = GridSerializer.deserialize(gameEntity.getCurrent());
         return new SolvedResult(complete.equals(current));

@@ -13,6 +13,8 @@ public final class SudokuTestConstants {
     public static final int VALUE = 1;
     public static final int VALUE_BELOW_MIN = -1;
     public static final int VALUE_ABOVE_MAX = 10;
+    public static final int MIN_INDEX = 0;
+    public static final int MAX_INDEX = 8;
     public static final int SEED = 24;
     public static final int SEED_COUNT = 24;
     public static final int TARGET = 50;
@@ -21,4 +23,5 @@ public final class SudokuTestConstants {
     public static final int TARGET_BELOW_MIN = MIN_TARGET - 1;
     public static final int TARGET_ABOVE_MAX = MAX_TARGET + 1;
     public static final long ID = 1L;
+    public static final long INVALID_ID = 99999L;
 }

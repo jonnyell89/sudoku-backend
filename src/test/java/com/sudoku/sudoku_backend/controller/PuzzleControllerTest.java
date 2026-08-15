@@ -3,15 +3,15 @@ package com.sudoku.sudoku_backend.controller;
 import com.sudoku.sudoku_backend.SudokuConstants;
 import com.sudoku.sudoku_backend.model.Cell;
 import com.sudoku.sudoku_backend.model.CellGrid;
-import com.sudoku.sudoku_backend.service.Difficulty;
-import com.sudoku.sudoku_backend.service.NewPuzzle;
-import com.sudoku.sudoku_backend.service.PuzzleService;
+import com.sudoku.sudoku_backend.service.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.NoSuchElementException;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -31,39 +31,64 @@ public class PuzzleControllerTest {
     private static final int GIVEN_COL = 0;
     private static final int GIVEN_VALUE = 1;
 
-    private static CellGrid knownCellGrid() {
+    private static CellGrid knownCellGrid(int givenRow, int givenCol, int givenValue) {
         Cell[][] cells = new Cell[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
         for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
             for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
                 cells[row][col] = Cell.empty(row, col);
             }
         }
-        cells[GIVEN_ROW][GIVEN_COL] = Cell.given(GIVEN_ROW, GIVEN_COL, GIVEN_VALUE);
+        cells[givenRow][givenCol] = Cell.given(givenRow, givenCol, givenValue);
         return new CellGrid(cells);
     }
 
     @Test
     void shouldReturnPuzzleWhenCreated() throws Exception {
-        NewPuzzle newPuzzle = new NewPuzzle(ID, knownCellGrid());
+        NewPuzzle newPuzzle = new NewPuzzle(ID, knownCellGrid(GIVEN_ROW, GIVEN_COL, GIVEN_VALUE));
         when(puzzleService.newPuzzle(Difficulty.EASY))
                 .thenReturn(newPuzzle);
 
         mockMvc.perform(post("/api/puzzles").param("difficulty", "EASY"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(ID))
-                .andExpect(jsonPath("$.cells[0][0].value").value(VALUE))
+                .andExpect(jsonPath("$.cells[0][0].value").value(GIVEN_VALUE))
                 .andExpect(jsonPath("$.cells[0][0].given").value(true))
                 .andExpect(jsonPath("$.cells[0][1].value").value(SudokuConstants.EMPTY_CELL))
                 .andExpect(jsonPath("$.cells[0][1].given").value(false));
     }
 
     @Test
+    void shouldReturnGuessResultCorrectTrueSolvedFalse() throws Exception {
+        GuessResult guessResult = new GuessResult(true, false);
+        when(puzzleService.makeGuess(ID, ROW, COL, VALUE))
+                .thenReturn(guessResult);
+
+        mockMvc.perform(post(String.format("/api/puzzles/%d/guesses", ID))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(String.format("{\"row\":%d,\"col\":%d,\"value\":%d}", ROW, COL, VALUE)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.correct").value(true))
+                .andExpect(jsonPath("$.solved").value(false));
+    }
+
+    @Test
+    void shouldReturnSolvedResultSolvedTrue() throws Exception {
+        SolvedResult solvedResult = new SolvedResult(true);
+        when(puzzleService.isSolved(ID))
+                .thenReturn(solvedResult);
+
+        mockMvc.perform(get(String.format("/api/puzzles/%d/solved", ID)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.solved").value(true));
+    }
+
+    @Test
     void shouldReturn404WhenGameNotFound() throws Exception {
         when(puzzleService.makeGuess(INVALID_ID, ROW, COL, VALUE))
-                .thenThrow(new java.util.NoSuchElementException(String.format("Puzzle Not Found with id: %d", INVALID_ID)));
+                .thenThrow(new NoSuchElementException(String.format("Puzzle Not Found with id: %d", INVALID_ID)));
 
         mockMvc.perform(post(String.format("/api/puzzles/%d/guesses", INVALID_ID))
-                        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(String.format("{\"row\":%d,\"col\":%d,\"value\":%d}", ROW, COL, VALUE)))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))

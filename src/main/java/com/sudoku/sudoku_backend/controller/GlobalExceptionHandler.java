@@ -12,30 +12,23 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(PuzzleNotFoundException.class) // Puzzle Not Found -> PuzzleNotFoundException -> 500 Internal Server Error -> 404 Not Found
-    public ProblemDetail handlePuzzleNotFoundException(PuzzleNotFoundException puzzleNotFoundException) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, puzzleNotFoundException.getMessage());
+    public ProblemDetail handlePuzzleNotFoundException(PuzzleNotFoundException exception) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
         problemDetail.setTitle("Puzzle Not Found");
         return problemDetail;
     }
 
     @ExceptionHandler(InvalidGuessException.class) // Invalid Guess -> InvalidGuessException -> 500 Internal Server Error -> 400 Bad Request
-    public ProblemDetail handleInvalidGuessException(InvalidGuessException invalidGuessException) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, invalidGuessException.getMessage());
+    public ProblemDetail handleInvalidGuessException(InvalidGuessException exception) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, exception.getMessage());
         problemDetail.setTitle("Invalid Guess");
         return problemDetail;
     }
 
-//    @ExceptionHandler(IllegalArgumentException.class) // Invalid Guess -> IllegalArgumentException -> 500 Internal Server Error -> 400 Bad Request
-//    public ProblemDetail handleIllegalArgumentException(IllegalArgumentException illegalArgumentException) {
-//        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, illegalArgumentException.getMessage());
-//        problemDetail.setTitle("Invalid Request");
-//        return problemDetail;
-//    }
-
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ProblemDetail handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException methodArgumentTypeMismatchException) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, methodArgumentTypeMismatchException.getMessage());
-        problemDetail.setTitle(String.format("Invalid value for parameter '%s'", methodArgumentTypeMismatchException.getName()));
+    public ProblemDetail handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException exception) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, exception.getMessage());
+        problemDetail.setTitle(String.format("Invalid value for parameter '%s'", exception.getName()));
         return problemDetail;
     }
 }

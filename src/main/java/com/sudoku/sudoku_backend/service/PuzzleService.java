@@ -5,13 +5,14 @@ import com.sudoku.sudoku_backend.core.Generator;
 import com.sudoku.sudoku_backend.core.Grid;
 import com.sudoku.sudoku_backend.core.Puzzle;
 import com.sudoku.sudoku_backend.core.Validator;
+import com.sudoku.sudoku_backend.exception.InvalidGuessException;
+import com.sudoku.sudoku_backend.exception.PuzzleNotFoundException;
 import com.sudoku.sudoku_backend.model.PuzzleMapper;
 import com.sudoku.sudoku_backend.persistence.GameEntity;
 import com.sudoku.sudoku_backend.persistence.GameRepository;
 import com.sudoku.sudoku_backend.persistence.GridSerializer;
 import org.springframework.stereotype.Service;
 
-import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @Service
@@ -42,11 +43,15 @@ public class PuzzleService {
     }
 
     public GuessResult makeGuess(long id, int row, int col, int value) {
-        Validator.validateIndex("row", row);
-        Validator.validateIndex("col", col);
-        Validator.validateValue(value);
+        try {
+            Validator.validateIndex("row", row);
+            Validator.validateIndex("col", col);
+            Validator.validateValue(value);
+        } catch (IllegalArgumentException exception) {
+            throw new InvalidGuessException(exception.getMessage(), exception);
+        }
         GameEntity gameEntity = gameRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(String.format("Puzzle Not Found with id: %d", id)));
+                .orElseThrow(() -> new PuzzleNotFoundException(String.format("Puzzle Not Found with id: %d", id)));
 
         Grid carved = GridSerializer.deserialize(gameEntity.getCarved());
         if (carved.getValue(row, col) != SudokuConstants.EMPTY_CELL) {
@@ -67,7 +72,7 @@ public class PuzzleService {
 
     public SolvedResult isSolved(long id) {
         GameEntity gameEntity = gameRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(String.format("Puzzle Not Found with id: %d", id)));
+                .orElseThrow(() -> new PuzzleNotFoundException(String.format("Puzzle Not Found with id: %d", id)));
         Grid complete = GridSerializer.deserialize(gameEntity.getComplete());
         Grid current = GridSerializer.deserialize(gameEntity.getCurrent());
         return new SolvedResult(complete.equals(current));

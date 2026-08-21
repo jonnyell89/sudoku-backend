@@ -1,6 +1,8 @@
 package com.sudoku.sudoku_backend.controller;
 
 import com.sudoku.sudoku_backend.SudokuConstants;
+import com.sudoku.sudoku_backend.exception.InvalidGuessException;
+import com.sudoku.sudoku_backend.exception.PuzzleNotFoundException;
 import com.sudoku.sudoku_backend.model.Cell;
 import com.sudoku.sudoku_backend.model.CellGrid;
 import com.sudoku.sudoku_backend.service.*;
@@ -10,9 +12,6 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
-import java.util.NoSuchElementException;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -74,6 +73,20 @@ public class PuzzleControllerTest {
     }
 
     @Test
+    void shouldReturnGuessResultCorrectFalseSolvedFalse() throws Exception {
+        GuessResult guessResult = new GuessResult(false, false);
+        when(puzzleService.makeGuess(ID, ROW, COL, VALUE))
+                .thenReturn(guessResult);
+
+        mockMvc.perform(post(String.format("/api/puzzles/%d/guesses", ID))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(String.format("{\"row\":%d,\"col\":%d,\"value\":%d}", ROW, COL, VALUE)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.correct").value(false))
+                .andExpect(jsonPath("$.solved").value(false));
+    }
+
+    @Test
     void shouldReturnSolvedResultSolvedTrue() throws Exception {
         SolvedResult solvedResult = new SolvedResult(true);
         when(puzzleService.isSolved(ID))
@@ -85,9 +98,9 @@ public class PuzzleControllerTest {
     }
 
     @Test
-    void shouldReturn404WhenMakeGuessGameNotFound() throws Exception {
+    void shouldReturn404WhenMakeGuessPuzzleNotFound() throws Exception {
         when(puzzleService.makeGuess(INVALID_ID, ROW, COL, VALUE))
-                .thenThrow(new NoSuchElementException(String.format("Puzzle Not Found with id: %d", INVALID_ID)));
+                .thenThrow(new PuzzleNotFoundException(String.format("Puzzle Not Found with id: %d", INVALID_ID)));
 
         mockMvc.perform(post(String.format("/api/puzzles/%d/guesses", INVALID_ID))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -101,7 +114,7 @@ public class PuzzleControllerTest {
     @Test
     void shouldReturn400WhenServiceRejectsGuess() throws Exception {
         when(puzzleService.makeGuess(ID, ROW_ABOVE_MAX, COL, VALUE))
-                .thenThrow(new IllegalArgumentException(String.format("row must be between %d and %d", MIN_INDEX, MAX_INDEX)));
+                .thenThrow(new InvalidGuessException(String.format("row must be between %d and %d", MIN_INDEX, MAX_INDEX), new IllegalArgumentException(String.format("row must be between %d and %d", MIN_INDEX, MAX_INDEX))));
 
         mockMvc.perform(post(String.format("/api/puzzles/%d/guesses", ID))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -114,16 +127,22 @@ public class PuzzleControllerTest {
 
     @Test
     void shouldReturn400WhenDifficultyIsInvalid() throws Exception {
-        when(puzzleService.newPuzzle(INVALID_DIFFICULTY))
-                .thenThrow(new MethodArgumentTypeMismatchException(String.format()))
+        mockMvc.perform(post("/api/puzzles").param("difficulty", INVALID_DIFFICULTY))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.title").value("Invalid value for parameter 'difficulty'"))
+                .andExpect(jsonPath("$.detail").value(String.format("'%s' is not a valid value for parameter 'difficulty'.", INVALID_DIFFICULTY)));
     }
 
     @Test
-    void shouldReturn404WhenIsSolvedGameNotFound() throws Exception {
+    void shouldReturn404WhenIsSolvedPuzzleNotFound() throws Exception {
         when(puzzleService.isSolved(INVALID_ID))
-                .thenThrow(new NoSuchElementException(String.format("Puzzle Not Found with id: %d", INVALID_ID)));
+                .thenThrow(new PuzzleNotFoundException(String.format("Puzzle Not Found with id: %d", INVALID_ID)));
 
         mockMvc.perform(get(String.format("/api/puzzles/%d/solved", INVALID_ID)))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.title").value("Puzzle Not Found"))
+                .andExpect(jsonPath("$.detail").value(String.format("Puzzle Not Found with id: %d", INVALID_ID)));
     }
 }
